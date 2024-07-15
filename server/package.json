@@ -1,0 +1,27 @@
+{
+  "name": "sidogames-frontenddev-server",
+  "version": "1.0.0",
+  "description": "dev Frontend Server",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Annyeoungcloud/MFL-Frontend.git"
+  },
+  "author": "millerrabin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Annyeoungcloud/MFL-Frontend.git/issues"
+  },
+  "homepage": "https://github.com/Annyeoungcloud/MFL-Frontend.git#readme",
+  "dependencies": {
+    "chokidar": "^3.6.0",
+    "koa": "^2.13.4",
+    "koa-router": "^10.1.1",
+    "koa-send": "^5.0.1",
+    "koa-static": "^5.0.0"
+  }
+}
