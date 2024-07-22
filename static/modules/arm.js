@@ -6,20 +6,14 @@ const gStatus = {
     j: NaN,
     k: NaN,
     real: NaN,
-    quaternionAccuracy: NaN,
-    yaw: NaN,
-    pitch: NaN,
-    roll: NaN
+    quaternionAccuracy: NaN
   },
   platform: {
     i: NaN,
     j: NaN,
     k: NaN,
     real: NaN,
-    quaternionAccuracy: NaN,
-    yaw: NaN,
-    pitch: NaN,
-    roll: NaN
+    quaternionAccuracy: NaN
   },
   error: null
 };
@@ -51,15 +45,7 @@ async function getStatus() {
   gStatus.platform.j = obj.platform.j;
   gStatus.platform.k = obj.platform.k;
   gStatus.platform.real = obj.platform.real;      
-  gStatus.platform.quaternionAccuracy = obj.platform.quaternionAccuracy;
-  const sEuler = euler.get(gStatus.shoulder.i,  gStatus.shoulder.j,  gStatus.shoulder.k,  gStatus.shoulder.real);
-  gStatus.shoulder.yaw = sEuler.yaw;
-  gStatus.shoulder.pitch = sEuler.pitch;
-  gStatus.shoulder.roll = sEuler.roll;
-  const pEuler = euler.get(gStatus.platform.i,  gStatus.platform.j,  gStatus.platform.k,  gStatus.platform.real);
-  gStatus.platform.yaw = pEuler.yaw;
-  gStatus.platform.pitch = pEuler.pitch;
-  gStatus.platform.roll = pEuler.roll;
+  gStatus.platform.quaternionAccuracy = obj.platform.quaternionAccuracy;  
   expr.onupdate?.(gStatus);
 }
   

@@ -30,24 +30,36 @@ function multiplyVector(a, v) {
   const i = a.real * v.x + a.j * v.z - a.k * v.y;
   const j = a.real * v.y - a.i * v.z + a.k * v.x;
   const k = a.real * v.z + a.i * v.y - a.j * v.x;
-  return { i, j, k, real };
+  return handleZero({ i, j, k, real });
+}
+
+function isZero(a) {
+  return ((a.i == 0) && (a.j == 0) && (a.k == 0) && (a.real == 0));
+}
+
+function handleZero(a) {
+  if (isZero) a.real = 1;
+  return a;
+}
+
+
+
+function invert(q) {    
+  return  {
+    real: q.real,
+    i: -q.i,
+    j: -q.j,
+    k: -q.k
+  };
 }
 
 function transform(q, v) {
-  t = multiplyVector(q, v)
-  t = multiply(t, invert(q));
-  
-  quat_transform_vector.x = t.x
-  quat_transform_vector.y = t.y
-  quat_transform_vector.z = t.z
-
+  const t = multiplyVector(q, v)
+  const tt = multiply(t, invert(q));
+  return tt;
 }
-    
-  
-  
-
+        
 export default {
-  create,
-  multiply,
-  multiplyVector
+  create,  
+  transform
 }

@@ -1,9 +1,10 @@
+import * as THREE from 'three';
+
 class Euler extends HTMLElement {
   #vector = { x: 0, y: 0, z: 0 };
   
   #template =
-    `<h3>Rotation Vector</h3>
-      <label>
+    `<label>
         <span>Roll:</span>
         <input class="roll" type="number" value="0" name="roll"/>
       </label>
@@ -42,6 +43,12 @@ class Euler extends HTMLElement {
     return this.#vector;
   }
 
+  get quaternion() {
+    const quaternion = new THREE.Quaternion();
+    const euler = new THREE.Euler( this.#vector.x, this.#vector.y, this.#vector.z, 'XYZ' );    
+    return quaternion.setFromEuler(euler);
+  }
+
   async connectedCallback() {    
     this.innerHTML = this.#template;
     this.components = {
@@ -56,4 +63,4 @@ class Euler extends HTMLElement {
   async disconnectedCallback() { }
 }
 
-customElements.define('imu-euler', Euler);
+customElements.define('edit-euler', Euler);

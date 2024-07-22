@@ -48,7 +48,7 @@ label {
 }
 
 label span {
-  width: 20%;
+  white-space: nowrap;
   text-align: right; 
 }
 

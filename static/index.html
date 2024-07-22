@@ -40,8 +40,8 @@
       <div class="status">        
         <div class="shoulder">
           <h2>Shoulder</h2>
-          <div class="container">
-            <imu-euler class="rotate"></imu-euler>
+          <div class="container">            
+            <edit-euler class="rotate"></edit-euler>
             <div class="quaternion">
               <h3>Quaternion</h3>
               <label class="qi">
@@ -118,69 +118,15 @@
             <span>Accuracy:</span>
             <span class="value"></span>
           </label>
-        </div>        
-      </div>
-      <div class="multiply">
-        <div class="quat-A">
-          <span>Quaternion A</span>
-          <label>
-            <span>I:</span>
-            <input type="number" value="0"/>
-          </label>
-          <label>
-            <span>J:</span>
-            <input type="number" value="0"/>
-          </label>
-          <label>
-            <span>K:</span>
-            <input type="number" value="0"/>
-          </label>
-          <label>
-            <span>Real:</span>
-            <input type="number" value="1"/>
-          </label>   
         </div>
-        <div class="quat-B">
-          <span>Quaternion B</span>
-          <label>
-            <span>I:</span>
-            <input type="number" value="0"/>
-          </label>
-          <label>
-            <span>J:</span>
-            <input type="number" value="0"/>
-          </label>
-          <label>
-            <span>K:</span>
-            <input type="number" value="0"/>
-          </label>
-          <label>
-            <span>Real:</span>
-            <input type="number" value="1"/>
-          </label> 
-          <button>Get Euler</button>
-          <span>Euler:</span><span class="euler-a"></span>
+        <div class="test">
+          <h3>Test Vector</h3>
+          <edit-vector class="test-vector"></edit-vector>
+          <h3>Rotate Vector</h3>
+          <edit-euler class="rotate-vector"></edit-euler>                  
+          <button>Rotate</button>
         </div>
-        <div class="result">
-          <span>Result</span>
-          <label>
-            <span>I:</span>
-            <input type="number" value="0"/>
-          </label>
-          <label>
-            <span>J:</span>
-            <input type="number" value="0"/>
-          </label>
-          <label>
-            <span>K:</span>
-            <input type="number" value="0"/>
-          </label>
-          <label>
-            <span>Real:</span>
-            <input type="number" value="1"/>
-          </label>   
-        </div>        
-      </div>
+      </div>                    
     </div>    
   </body>
 </html>		
