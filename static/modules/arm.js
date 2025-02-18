@@ -1,5 +1,3 @@
-import euler from './euler.js';
-
 const gStatus = {
   shoulder: {
     i: NaN,
@@ -8,12 +6,38 @@ const gStatus = {
     real: NaN,
     quaternionAccuracy: NaN
   },
+  elbow: {
+    i: NaN,
+    j: NaN,
+    k: NaN,
+    real: NaN,
+    quaternionAccuracy: NaN
+  },
+  wrist: {
+    i: NaN,
+    j: NaN,
+    k: NaN,
+    real: NaN,
+    quaternionAccuracy: NaN
+  },
+  claw: {
+    i: NaN,
+    j: NaN,
+    k: NaN,
+    real: NaN    
+  },
   platform: {
     i: NaN,
     j: NaN,
     k: NaN,
     real: NaN,
     quaternionAccuracy: NaN
+  },
+  arm: {
+    online: false,
+    canSendOK: false,
+    shoulderOK: false,
+    elbowOK: false
   },
   error: null
 };
@@ -25,36 +49,58 @@ const expr = {
 
 
 async function getStatus() {
-  const res = await fetch('http://192.168.1.70/status', {
+  const res = await fetch('http://192.168.1.120/status', {
     method: 'POST',
+    signal: AbortSignal.timeout(500),
     headers: {
       'Content-Type': 'Application/JSON'
     },
     body: JSON.stringify({})
   });
-
+  
   const text = await res.text();
-  if (!res.ok) throw new Error(text);
+  if (!res.ok) {    
+    throw new Error(text);        
+  }
   const obj = JSON.parse(text);      
   gStatus.shoulder.i = obj.shoulder.i;
   gStatus.shoulder.j = obj.shoulder.j;
   gStatus.shoulder.k = obj.shoulder.k;
   gStatus.shoulder.real = obj.shoulder.real;
   gStatus.shoulder.quaternionAccuracy = obj.shoulder.quaternionAccuracy;
+  
+  gStatus.elbow.i = obj.elbow.i;
+  gStatus.elbow.j = obj.elbow.j;
+  gStatus.elbow.k = obj.elbow.k;
+  gStatus.elbow.real = obj.elbow.real;
+  gStatus.elbow.quaternionAccuracy = obj.elbow.quaternionAccuracy;
+  
+  gStatus.wrist.i = obj.wrist.i;
+  gStatus.wrist.j = obj.wrist.j;
+  gStatus.wrist.k = obj.wrist.k;
+  gStatus.wrist.real = obj.wrist.real;
+  gStatus.wrist.quaternionAccuracy = obj.wrist.quaternionAccuracy;
+    
   gStatus.platform.i = obj.platform.i;
   gStatus.platform.j = obj.platform.j;
   gStatus.platform.k = obj.platform.k;
   gStatus.platform.real = obj.platform.real;      
   gStatus.platform.quaternionAccuracy = obj.platform.quaternionAccuracy;  
+
+  gStatus.arm.online = true;
+  gStatus.arm.canSendOK = obj.status.canSendOK;
+  gStatus.arm.shoulderOK = obj.status.shoulderOK;
+  gStatus.arm.elbowOK = obj.status.elbowOK;    
   expr.onupdate?.(gStatus);
 }
   
 async function loopStatus() {
   try {
     await getStatus();    
-  } catch (e) {      
+  } catch (e) {  
+    gStatus.arm.online = false;    
     gStatus.error = e.message;
-    console.error(e);
+    expr.onupdate?.(gStatus);
   }
       
   setTimeout(function() {

@@ -29,12 +29,12 @@ async function start(application, port) {
 }
 
 process.on("unhandledRejection", function (reason, p) {
-  console.log(
+  /*console.log(
     "Possibly Unhandled Rejection at: Promise ",
     p,
     " reason: ",
     reason
-  );
+  );*/
 });
 
 start(application, config.port);

@@ -18,25 +18,7 @@
   <body>
     <div class="application">
       <div class="renderer"></div>      
-      <div class="generator">
-        <h2>Quaternion Generator</h2>
-        <label>
-          <span>Roll:</span>
-          <input type="number" value="0"/>
-        </label>
-        <label>
-          <span>Pitch:</span>
-          <input type="number" value="0"/>
-        </label>
-        <label>
-          <span>Yaw:</span>
-          <input type="number" value="0"/>
-        </label>
-        <button>Generate</button>
-        <input class="output" readonly/>
-        <button>Fill A</button>
-        <button>Fill B</button>
-      </div>
+      <arm-status></arm-status>
       <div class="status">        
         <div class="shoulder">
           <h2>Shoulder</h2>
@@ -84,40 +66,45 @@
         
         <div class="platform">
           <h2>Platform</h2>
-          <h3>Quaternion</h3>
-          <label class="qi">
-            <span>I:</span>
-            <span class="value"></span>
-          </label>
-          <label class="qj">
-            <span>J:</span>
-            <span class="value"></span>
-          </label>
-          <label class="qk">
-            <span>K:</span>
-            <span class="value"></span>
-          </label>
-          <label class="qr">
-            <span>Real:</span>
-            <span class="value"></span>
-          </label>
-          <h3>Euler</h3>
-          <label class="roll">
-            <span>Roll:</span>
-            <span class="value"></span>
-          </label>
-          <label class="pitch">
-            <span>Pitch:</span>
-            <span class="value"></span>
-          </label>
-          <label class="yaw">
-            <span>Yaw:</span>
-            <span class="value"></span>
-          </label>
-          <label class="acc">
-            <span>Accuracy:</span>
-            <span class="value"></span>
-          </label>
+          <div class="container">
+            <edit-euler class="rotate"></edit-euler>
+            <div class="quaternion">
+              <h3>Quaternion</h3>
+              <label class="qi">
+                <span>I:</span>
+                <span class="value"></span>
+              </label>
+              <label class="qj">
+                <span>J:</span>
+                <span class="value"></span>
+              </label>
+              <label class="qk">
+                <span>K:</span>
+                <span class="value"></span>
+              </label>
+              <label class="qr">
+                <span>Real:</span>
+                <span class="value"></span>
+              </label>
+              <h3>Euler</h3>
+              <label class="roll">
+                <span>Roll:</span>
+                <span class="value"></span>
+              </label>
+              <label class="pitch">
+                <span>Pitch:</span>
+                <span class="value"></span>
+              </label>
+              <label class="yaw">
+                <span>Yaw:</span>
+                <span class="value"></span>
+              </label>
+              <label class="acc">
+                <span>Accuracy:</span>
+                <span class="value"></span>
+              </label>
+            </div>          
+          </div>
         </div>
         <div class="test">
           <h3>Test Vector</h3>

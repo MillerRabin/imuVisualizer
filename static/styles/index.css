@@ -94,3 +94,30 @@ label input {
 .status .error {
   color: red;
 }
+
+arm-status p {
+  padding: 0;
+  margin: 0;
+  display: flex;  
+}
+
+arm-status p span:first-child {
+  width: 7rem;
+}
+
+
+arm-status .val {
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid transparent;
+  border-radius: 50%;
+}
+
+
+arm-status .val.ok {
+  background-color: green;
+}
+
+arm-status .val.failed {
+  background-color: red;
+}
