@@ -34,6 +34,15 @@ class Status extends HTMLElement {
 
   constructor() {
     super();
+    this.innerHTML = this.#template;
+    this.components = {
+      sendVal: this.querySelector('.send .val'),
+      shoulderVal: this.querySelector('.shoulder .val'),
+      elbowVal: this.querySelector('.elbow .val'),
+      wristVal: this.querySelector('.wrist .val'),
+      clawVal: this.querySelector('.claw .val'),
+      onlineVal: this.querySelector('.online .val'),
+    };
   }
 
   #setState(component, state) {    
@@ -55,15 +64,7 @@ class Status extends HTMLElement {
   }
 
   async connectedCallback() {
-    this.innerHTML = this.#template;
-    this.components = {
-      sendVal: this.querySelector('.send .val'),
-      shoulderVal: this.querySelector('.shoulder .val'),
-      elbowVal: this.querySelector('.elbow .val'),
-      wristVal: this.querySelector('.wrist .val'),
-      clawVal: this.querySelector('.claw .val'),
-      onlineVal: this.querySelector('.online .val'),
-    };
+
   }
 
   async disconnectedCallback() { }

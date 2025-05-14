@@ -1,7 +1,11 @@
 import * as THREE from 'three';
 import arm from './modules/arm.js';
-import './components/vector/vector.js';
-import './components/euler/euler.js';
+import 'https://components.int-t.com/vector/vector.js';
+import 'https://components.int-t.com/euler/euler.js';
+import 'https://components.int-t.com/quaternion/quaternion.js';
+import 'https://components.int-t.com/floatValue/floatValue.js';
+import 'https://components.int-t.com/led/led.js';
+import 'https://components.int-t.com/flexPanel/flexPanel.js';
 import './components/status/status.js';
 
 let gComponents = null;
@@ -27,26 +31,36 @@ function getComponents() {
   const status = application.querySelector('.status');
   const shoulder = status.querySelector('.shoulder');
   const platform = status.querySelector('.platform');
-  const test = status.querySelector('.test');
+  const claw = status.querySelector('.claw');
   const armStatus = application.querySelector('arm-status');
   return {
     renderer: application.querySelector('.renderer'),
     status: {
       shoulderRotate: {
-        euler: shoulder.querySelector('edit-euler.rotate')
+        euler: shoulder.querySelector('intention-euler.rotate')
       },
       platformRotate: {
-        euler: platform.querySelector('edit-euler.rotate')
+        euler: platform.querySelector('intention-euler.rotate')
       },
       shoulder: {
-        i: shoulder.querySelector('.qi .value'),
-        j: shoulder.querySelector('.qj .value'),
-        k: shoulder.querySelector('.qk .value'),
-        real: shoulder.querySelector('.qr .value'),
+        armQuaternion: shoulder.querySelector('intention-quaternion'),
         roll: shoulder.querySelector('.roll .value'),
         pitch: shoulder.querySelector('.pitch .value'),
         yaw: shoulder.querySelector('.yaw .value'),
-        accuracy: shoulder.querySelector('.acc .value'),
+        accuracy: shoulder.querySelector('.shoulder-accuracy'),
+        euler: shoulder.querySelector('.shoulder-euler'),
+      },
+      claw: {
+        i: claw.querySelector('.qi .value'),
+        j: claw.querySelector('.qj .value'),
+        k: claw.querySelector('.qk .value'),
+        real: claw.querySelector('.qr .value'),
+        roll: claw.querySelector('.roll .value'),
+        pitch: claw.querySelector('.pitch .value'),
+        yaw: claw.querySelector('.yaw .value'),
+        accuracy: claw.querySelector('.acc .value'),
+        distance: claw.querySelector('.distance .value'),
+        distanceType: claw.querySelector('.distance-type .value'),
       },
       platform: {
         i: platform.querySelector('.qi .value'),
@@ -57,15 +71,11 @@ function getComponents() {
         pitch: platform.querySelector('.pitch .value'),
         yaw: platform.querySelector('.yaw .value'),
         accuracy: platform.querySelector('.acc .value'),
-      },
-      test: {
-        vector: test.querySelector('edit-vector.test')
-      },
+      },      
       error: status.querySelector('.error'),
       arm: armStatus
     }
   }
-  
 }
 
 function ready() {
@@ -78,8 +88,7 @@ function ready() {
     renderer.render( scene, camera );
   }
     
-  gComponents = getComponents();
-  
+  gComponents = getComponents();  
   const ratio = gComponents.renderer.clientWidth / gComponents.renderer.clientHeight;    
 
   const scene = new THREE.Scene();
@@ -98,9 +107,9 @@ function ready() {
     new THREE.MeshBasicMaterial({ map: image1 }),
     new THREE.MeshBasicMaterial({ map: image2 }),
     new THREE.MeshBasicMaterial({ map: image3 }),
-    new THREE.MeshBasicMaterial({map: image4 }),
-    new THREE.MeshBasicMaterial({map: image5 }),
-    new THREE.MeshBasicMaterial({map: image6 })
+    new THREE.MeshBasicMaterial({ map: image4 }),
+    new THREE.MeshBasicMaterial({ map: image5 }),
+    new THREE.MeshBasicMaterial({ map: image6 })
   ];
 
   renderer.setSize(gComponents.renderer.clientWidth, gComponents.renderer.clientHeight);
@@ -165,8 +174,6 @@ async function armCallback(status) {
   //const srQuat = new THREE.Quaternion(-0.5, -0.5, -0.5, 0.5) //Down East South 
   //const srQuat = new THREE.Quaternion(0, -dq, 0, dq) //East Up South 
   
-  
-  
   const pnQuat = poQuat.multiplyQuaternions(prQuat, poQuat);
   //pnQuat.normalize();
   //const snQuat = soQuat.multiplyQuaternions(srQuat, soQuat);
@@ -174,12 +181,12 @@ async function armCallback(status) {
   const snQuat = soQuat.multiplyQuaternions(srQuat, soQuat);
   
   //snQuat.normalize();
-  gComponents.status.shoulder.i.innerHTML = snQuat.x.toFixed(3);
-  gComponents.status.shoulder.j.innerHTML = snQuat.y.toFixed(3);
-  gComponents.status.shoulder.k.innerHTML = snQuat.z.toFixed(3);
-  gComponents.status.shoulder.real.innerHTML = snQuat.w.toFixed(3);
+  gComponents.status.shoulder.armQuaternion.i = snQuat.x;
+  gComponents.status.shoulder.armQuaternion.j = snQuat.y;
+  gComponents.status.shoulder.armQuaternion.k = snQuat.z;
+  gComponents.status.shoulder.armQuaternion.real = snQuat.w;
     
-  gComponents.status.shoulder.accuracy.innerHTML = status.shoulder.quaternionAccuracy;
+  gComponents.status.shoulder.accuracy.value = status.shoulder.quaternionAccuracy;
   gComponents.status.platform.i.innerHTML = pnQuat.x.toFixed(3);
   gComponents.status.platform.j.innerHTML = pnQuat.y.toFixed(3);
   gComponents.status.platform.k.innerHTML = pnQuat.z.toFixed(3);
@@ -196,6 +203,10 @@ async function armCallback(status) {
   gComponents.status.platform.roll.innerHTML = `${pEuler.x.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.x).toFixed(3)}`;
   gComponents.status.platform.pitch.innerHTML = `${pEuler.y.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.y).toFixed(3)}`;
   gComponents.status.platform.yaw.innerHTML = `${pEuler.z.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.z).toFixed(3)}`;
+
+  gComponents.status.claw.distance.innerHTML = status.claw.distance;
+  gComponents.status.claw.distanceType.innerHTML = status.claw.distanceType;
+
   gComponents.status.arm.setStatus(status.arm);
   gShoulder = snQuat;
   gPlatform = pnQuat;

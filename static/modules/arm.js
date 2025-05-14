@@ -24,7 +24,9 @@ const gStatus = {
     i: NaN,
     j: NaN,
     k: NaN,
-    real: NaN    
+    real: NaN,
+    distance: NaN,
+    distanceType: NaN
   },
   platform: {
     i: NaN,
@@ -37,7 +39,10 @@ const gStatus = {
     online: false,
     canSendOK: false,
     shoulderOK: false,
-    elbowOK: false
+    elbowOK: false,
+    wristOK: false,
+    clawOK: false,
+    clawRangeOK: false,
   },
   error: null
 };
@@ -90,7 +95,13 @@ async function getStatus() {
   gStatus.arm.online = true;
   gStatus.arm.canSendOK = obj.status.canSendOK;
   gStatus.arm.shoulderOK = obj.status.shoulderOK;
-  gStatus.arm.elbowOK = obj.status.elbowOK;    
+  gStatus.arm.elbowOK = obj.status.elbowOK;
+  gStatus.arm.wristOK = obj.status.wristOK;
+  gStatus.arm.clawOK = obj.status.clawOK;
+  gStatus.arm.clawRangeOK = obj.status.clawRangeOK;
+  
+  gStatus.claw.distance = obj.claw.distance;
+  gStatus.claw.distanceType = obj.claw.distanceMeasureType;
   expr.onupdate?.(gStatus);
 }
   
