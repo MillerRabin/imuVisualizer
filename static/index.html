@@ -16,19 +16,21 @@
   </head>
 
   <body>
-    <intention-flex-panel class="application" data-direction="vertical" data-gap="1rem">
+    <intention-flex-panel class="application" data-direction="column" data-gap="1rem">
       <div class="renderer"></div>
-      <intention-flex-panel class="status">
+      <intention-flex-panel class="status" gap="3rem">
          <div class="platform">
           <h2>Platform</h2>
-          <intention-led>Online</intention-led>
-          <intention-led>CAN Sending</intention-led>
+          <intention-flex-panel class="led-container" data-direction="column">
+            <intention-led>Online</intention-led>
+            <intention-led>CAN Sending</intention-led>
+          </intention-flex-panel>
           <div class="container">
             <h3>Rotate</h3>
             <intention-euler class="rotate"></intention-euler>
             <h3>Quaternion</h3>
             <intention-quaternion class="platform-quat" read-only="true"></intention-quaternion>
-            <intention-float-value class="platform-accuracy" read-only="true">Accuracy</intention-float-value>            
+            <intention-float-value class="platform-accuracy" read-only="true">Accuracy:</intention-float-value>            
             <h3>Euler</h3>
             <intention-euler class="platform-euler" read-only="true"></intention-euler>
             <span class="error"></span>
@@ -36,13 +38,15 @@
         </div>
         <div class="shoulder">
           <h2>Shoulder</h2>
-          <intention-led>Online</intention-led>
+          <intention-flex-panel class="led-container" data-direction="column">
+            <intention-led>Online</intention-led>
+          </intention-flex-panel>
           <div class="container">
             <h3>Rotate</h3>
             <intention-euler class="rotate"></intention-euler>
             <h3>Quaternion</h3>
             <intention-quaternion class="shoulder-quat" read-only="true"></intention-quaternion>
-            <intention-float-value class="shoulder-accuracy" read-only="true">Accuracy</intention-float-value>            
+            <intention-float-value class="shoulder-accuracy" read-only="true">Accuracy:</intention-float-value>            
             <h3>Euler</h3>
             <intention-euler class="shoulder-euler" read-only="true"></intention-euler>
             <span class="error"></span>
@@ -50,13 +54,15 @@
         </div>
         <div class="elbow">
           <h2>Elbow</h2>
-          <intention-led>Online</intention-led>
+          <intention-flex-panel class="led-container" data-direction="column">
+            <intention-led>Online</intention-led>
+          </intention-flex-panel>
           <div class="container">
             <h3>Rotate</h3>
             <intention-euler class="rotate"></intention-euler>
             <h3>Quaternion</h3>
             <intention-quaternion class="elbow-quat" read-only="true"></intention-quaternion>
-            <intention-float-value class="elbow-accuracy" read-only="true">Accuracy</intention-float-value>            
+            <intention-float-value class="elbow-accuracy" read-only="true">Accuracy:</intention-float-value>            
             <h3>Euler</h3>
             <intention-euler class="elbow-euler" read-only="true"></intention-euler>
             <span class="error"></span>
@@ -64,13 +70,15 @@
         </div>
         <div class="wrist">
           <h2>Wrist</h2>
-          <intention-led>Online</intention-led>
+          <intention-flex-panel class="led-container" data-direction="column">
+            <intention-led>Online</intention-led>
+          </intention-flex-panel>
           <div class="container">
             <h3>Rotate</h3>
             <intention-euler class="rotate"></intention-euler>
             <h3>Quaternion</h3>
             <intention-quaternion class="wrist-quat" read-only="true"></intention-quaternion>
-            <intention-float-value class="wrist-accuracy" read-only="true">Accuracy</intention-float-value>            
+            <intention-float-value class="wrist-accuracy" read-only="true">Accuracy:</intention-float-value>            
             <h3>Euler</h3>
             <intention-euler class="wrist-euler" read-only="true"></intention-euler>
             <span class="error"></span>
@@ -78,17 +86,19 @@
         </div>
         <div class="claw">
           <h2>Claw</h2>
-          <intention-led>Online</intention-led>
+          <intention-flex-panel class="led-container" data-direction="column">
+            <intention-led>Online</intention-led>
+          </intention-flex-panel>
           <div class="container">
             <h3>Rotate</h3>
             <intention-euler class="rotate"></intention-euler>
             <h3>Quaternion</h3>
             <intention-quaternion class="claw-quat" read-only="true"></intention-quaternion>
-            <intention-float-value class="claw-accuracy" read-only="true">Accuracy</intention-float-value>
+            <intention-float-value class="claw-accuracy" read-only="true">Accuracy:</intention-float-value>
             <h3>Euler</h3>
             <intention-euler class="claw-euler" read-only="true"></intention-euler>
-            <intention-float-value class="claw-distance" read-only="true">Distance</intention-float-value>
-            <intention-float-value class="claw-distance-type" read-only="true">Measure Type</intention-float-value>
+            <intention-float-value class="claw-distance" read-only="true">Distance:</intention-float-value>
+            <intention-float-value class="claw-distance-type" read-only="true">Measure Type:</intention-float-value>
             <span class="error"></span>
           </div>            
         </div>

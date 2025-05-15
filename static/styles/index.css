@@ -12,13 +12,15 @@ body {
 }
 
 h2 {
-  padding: 0;
+  text-align: left;
+  padding: 0.5rem 0 0.5rem 0;
   margin: 0;
 }
 
 h3 {
   padding: 0;
   margin: 0.5rem 0 0.5rem 1rem;
+  text-align: left;
 }
 
 .renderer {
@@ -39,17 +41,10 @@ button {
   font-size: 1.2rem;
 }
 
-label {
-  width: 100%;
-  display: flex;
-  gap: 0.5rem;
+intention-float-value .title {
+  width: 75px;
 }
 
-label span {
-  white-space: nowrap;
-  text-align: right; 
-}
-
-label input {
-  width: 3rem;
-}
+ intention-flex-panel.led-container {
+    height: 50px;    
+ }
