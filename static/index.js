@@ -1,11 +1,16 @@
 import * as THREE from 'three';
 import arm from './modules/arm.js';
-import 'https://components.int-t.com/vector/vector.js';
-import 'https://components.int-t.com/euler/euler.js';
-import 'https://components.int-t.com/quaternion/quaternion.js';
-import 'https://components.int-t.com/floatValue/floatValue.js';
-import 'https://components.int-t.com/led/led.js';
-import 'https://components.int-t.com/flexPanel/flexPanel.js';
+import 'https://components.int-t.com/core/euler/euler.js';
+import 'https://components.int-t.com/core/quaternion/quaternion.js';
+import 'https://components.int-t.com/core/floatValue/floatValue.js';
+import 'https://components.int-t.com/core/led/led.js';
+import 'https://components.int-t.com/core/flexPanel/flexPanel.js';
+import 'https://components.int-t.com/core/errorMessage/errorMessage.js';
+import 'https://components.int-t.com/core/title/title.js';
+import 'https://components.int-t.com/core/gridPanel/gridPanel.js';
+import 'https://components.int-t.com/widgets/dashboard/page/page.js';
+
+
 import './components/status/status.js';
 
 let gComponents = null;
@@ -28,7 +33,7 @@ function createCube(materials, position) {
 
 function getComponents() {
   const application = window.document.querySelector('.application');  
-  const status = application.querySelector('.status');
+  const status = application;
   const shoulder = status.querySelector('.shoulder');
   const platform = status.querySelector('.platform');
   const claw = status.querySelector('.claw');
