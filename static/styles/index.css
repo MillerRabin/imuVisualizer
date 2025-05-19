@@ -37,3 +37,19 @@ intention-error-message {
 .panel {
   padding: 1rem;
 }
+
+intention-euler intention-float-value {
+  margin-bottom: 0.25rem;
+}
+
+intention-euler intention-float-value input {
+  max-width: 100px;
+}
+
+intention-dashboard-page intention-grid-panel > intention-flex-panel {
+  width: auto !important;
+}
+
+intention-led .title {
+  white-space: nowrap;
+}
