@@ -38,10 +38,6 @@ intention-error-message {
   padding: 1rem;
 }
 
-intention-euler intention-float-value {
-  margin-bottom: 0.25rem;
-}
-
 intention-euler intention-float-value input {
   max-width: 100px;
 }
