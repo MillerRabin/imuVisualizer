@@ -27,17 +27,17 @@
           <intention-flex-panel class="container" data-direction="column">
             <intention-title size="3">Rotate</intention-title>
             <intention-euler class="rotate"></intention-euler>
-            <intention-flex-panel>
+            <intention-flex-panel class="quat">
               <intention-flex-panel direction="column">
                 <intention-title size="3">Quaternion</intention-title>
                 <intention-quaternion class="platform-quat" read-only="true"></intention-quaternion>
-                <intention-float-value class="platform-accuracy" read-only="true">Accuracy:</intention-float-value>            
               </intention-flex-panel>
               <intention-flex-panel direction="column">
                 <intention-title size="3">Euler</intention-title>
                 <intention-euler class="platform-euler" read-only="true"></intention-euler>
               </intention-flex-panel>
             </intention-flex-panel>
+            <intention-float-value class="platform-accuracy accuracy" read-only="true">Accuracy:</intention-float-value>            
           </intention-flex-panel>
         </intention-flex-panel>
         <intention-flex-panel class="shoulder panel" data-direction="column">
@@ -52,7 +52,7 @@
               <intention-flex-panel direction="column">
                 <intention-title size="3">Quaternion</intention-title>
                 <intention-quaternion class="shoulder-quat" read-only="true"></intention-quaternion>
-                <intention-float-value class="shoulder-accuracy" read-only="true">Accuracy:</intention-float-value>            
+                <intention-float-value class="shoulder-accuracy accuracy" read-only="true">Accuracy:</intention-float-value>            
               </intention-flex-panel>
               <intention-flex-panel direction="column">
                 <intention-title size="3">Euler</intention-title>
@@ -73,7 +73,7 @@
               <intention-flex-panel direction="column">
                 <intention-title size="3">Quaternion</intention-title>
                 <intention-quaternion class="elbow-quat" read-only="true"></intention-quaternion>
-                <intention-float-value class="elbow-accuracy" read-only="true">Accuracy:</intention-float-value>            
+                <intention-float-value class="elbow-accuracy accuracy" read-only="true">Accuracy:</intention-float-value>            
               </intention-flex-panel>
               <intention-flex-panel direction="column">
                 <intention-title size="3">Euler</intention-title>
@@ -94,7 +94,7 @@
               <intention-flex-panel direction="column">
                 <intention-title size="3">Quaternion</intention-title>
                 <intention-quaternion class="wrist-quat" read-only="true"></intention-quaternion>
-                <intention-float-value class="wrist-accuracy" read-only="true">Accuracy:</intention-float-value>            
+                <intention-float-value class="wrist-accuracy accuracy" read-only="true">Accuracy:</intention-float-value>            
               </intention-flex-panel>
               <intention-flex-panel direction="column">
                 <intention-title size="3">Euler</intention-title>
@@ -115,15 +115,15 @@
               <intention-flex-panel direction="column">
                 <intention-title size="3">Quaternion</intention-title>
                 <intention-quaternion class="claw-quat" read-only="true"></intention-quaternion>
-                <intention-float-value class="claw-accuracy" read-only="true">Accuracy:</intention-float-value>
+                <intention-float-value class="claw-accuracy accuracy" read-only="true">Accuracy:</intention-float-value>
               </intention-flex-panel>
               <intention-flex-panel direction="column">
                 <intention-title size="3">Euler</intention-title>
                 <intention-euler class="claw-euler" read-only="true"></intention-euler>
               </intention-flex-panel>
             </intention-flex-panel>
-            <intention-float-value class="claw-distance" read-only="true">Distance:</intention-float-value>
-            <intention-float-value class="claw-distance-type" read-only="true">Measure Type:</intention-float-value>
+            <intention-float-value class="claw-distance distance" read-only="true">Distance:</intention-float-value>
+            <intention-float-value class="claw-distance-type distance" read-only="true">Measure Type:</intention-float-value>
           </intention-flex-panel>            
         </intention-flex-panel>
         <intention-error-message></intention-error-message>
