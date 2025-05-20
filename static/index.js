@@ -13,7 +13,6 @@ import 'https://components.int-t.com/widgets/dashboard/page/page.js';
 
 import './components/status/status.js';
 
-let gComponents = null;
 
 window.document.addEventListener('DOMContentLoaded', ready);
 
@@ -21,6 +20,7 @@ arm.onupdate = armCallback;
 
 let gPlatform = null;
 let gShoulder = null;
+let gComponents = null;
 
 function createCube(materials, position) {
   const geometry = new THREE.BoxGeometry(1, 1, 1);  
@@ -31,57 +31,6 @@ function createCube(materials, position) {
   return cube;
 }
 
-function getComponents() {
-  const application = window.document.querySelector('.application');  
-  const status = application;
-  const shoulder = status.querySelector('.shoulder');
-  const platform = status.querySelector('.platform');
-  const claw = status.querySelector('.claw');
-  const armStatus = application.querySelector('arm-status');
-  return {
-    renderer: application.querySelector('.renderer'),
-    status: {
-      shoulderRotate: {
-        euler: shoulder.querySelector('intention-euler.rotate')
-      },
-      platformRotate: {
-        euler: platform.querySelector('intention-euler.rotate')
-      },
-      shoulder: {
-        armQuaternion: shoulder.querySelector('intention-quaternion'),
-        roll: shoulder.querySelector('.roll .value'),
-        pitch: shoulder.querySelector('.pitch .value'),
-        yaw: shoulder.querySelector('.yaw .value'),
-        accuracy: shoulder.querySelector('.shoulder-accuracy'),
-        euler: shoulder.querySelector('.shoulder-euler'),
-      },
-      claw: {
-        i: claw.querySelector('.qi .value'),
-        j: claw.querySelector('.qj .value'),
-        k: claw.querySelector('.qk .value'),
-        real: claw.querySelector('.qr .value'),
-        roll: claw.querySelector('.roll .value'),
-        pitch: claw.querySelector('.pitch .value'),
-        yaw: claw.querySelector('.yaw .value'),
-        accuracy: claw.querySelector('.acc .value'),
-        distance: claw.querySelector('.distance .value'),
-        distanceType: claw.querySelector('.distance-type .value'),
-      },
-      platform: {
-        i: platform.querySelector('.qi .value'),
-        j: platform.querySelector('.qj .value'),
-        k: platform.querySelector('.qk .value'),
-        real: platform.querySelector('.qr .value'),
-        roll: platform.querySelector('.roll .value'),
-        pitch: platform.querySelector('.pitch .value'),
-        yaw: platform.querySelector('.yaw .value'),
-        accuracy: platform.querySelector('.acc .value'),
-      },      
-      error: status.querySelector('.error'),
-      arm: armStatus
-    }
-  }
-}
 
 function ready() {
   function animate() {
@@ -93,7 +42,8 @@ function ready() {
     renderer.render( scene, camera );
   }
     
-  gComponents = getComponents();  
+  const application = window.document.querySelector('.application');
+  gComponents = application.components;
   const ratio = gComponents.renderer.clientWidth / gComponents.renderer.clientHeight;    
 
   const scene = new THREE.Scene();
@@ -120,6 +70,7 @@ function ready() {
   renderer.setSize(gComponents.renderer.clientWidth, gComponents.renderer.clientHeight);
 
   gComponents.renderer.appendChild(renderer.domElement);
+  gComponents.grid.setRow(1, 'height', 'auto');
   
   const shoulder = createCube(materials, { x: 0, y: 0, z: 0 });  
   const platform = createCube(materials, { x: 2, y: 0, z: 0 });
@@ -135,6 +86,8 @@ function ready() {
 async function armCallback(status) {
   if (gComponents == null) return;
   
+  gComponents.error.message = '';
+  
   const poQuat = new THREE.Quaternion(status.platform.i, status.platform.j, status.platform.k, status.platform.real);
   const soQuat = new THREE.Quaternion(status.shoulder.i, status.shoulder.j, status.shoulder.k, status.shoulder.real);
   
@@ -145,7 +98,7 @@ async function armCallback(status) {
   
   const pmQuat = new THREE.Quaternion(0, 0, 0, 1); //East-South-Down
   //const pmQuat = new THREE.Quaternion(0, -1, 0, 0); //East-South-Down
-  const psQuat = gComponents.status.platformRotate.euler.quaternion;
+  const psQuat = gComponents.platform.rotate.quaternion;
   const prQuat = psQuat.multiplyQuaternions(pmQuat, psQuat);
       
   //const srQuat = new THREE.Quaternion(-0.5, -0.5, 0.5, -0.5); //Up-East-North
@@ -156,7 +109,7 @@ async function armCallback(status) {
   //const srQuat = new THREE.Quaternion(0, 0, -dq, dq) //South East Up 
   //const smQuat = new THREE.Quaternion(0, -1, 0, 0) //East South Down 
   //const smQuat = new THREE.Quaternion(0.5, -0.5, -0.5, 0.5) //South Up West 
-  const ssQuat = gComponents.status.shoulderRotate.euler.quaternion;
+  const ssQuat = gComponents.shoulder.rotate.quaternion;
   const srQuat = ssQuat.multiplyQuaternions(smQuat, ssQuat);
       
   //const srQuat = new THREE.Quaternion(-dq, -dq, 0, 0) //North East Down 
@@ -186,33 +139,30 @@ async function armCallback(status) {
   const snQuat = soQuat.multiplyQuaternions(srQuat, soQuat);
   
   //snQuat.normalize();
-  gComponents.status.shoulder.armQuaternion.i = snQuat.x;
-  gComponents.status.shoulder.armQuaternion.j = snQuat.y;
-  gComponents.status.shoulder.armQuaternion.k = snQuat.z;
-  gComponents.status.shoulder.armQuaternion.real = snQuat.w;
-    
-  gComponents.status.shoulder.accuracy.value = status.shoulder.quaternionAccuracy;
-  gComponents.status.platform.i.innerHTML = pnQuat.x.toFixed(3);
-  gComponents.status.platform.j.innerHTML = pnQuat.y.toFixed(3);
-  gComponents.status.platform.k.innerHTML = pnQuat.z.toFixed(3);
-  gComponents.status.platform.real.innerHTML = pnQuat.w.toFixed(3);
-  gComponents.status.platform.accuracy.innerHTML = status.platform.quaternionAccuracy;
+  gComponents.shoulder.quaternion.i = snQuat.x;
+  gComponents.shoulder.quaternion.j = snQuat.y;
+  gComponents.shoulder.quaternion.k = snQuat.z;
+  gComponents.shoulder.quaternion.real = snQuat.w;    
+  gComponents.shoulder.accuracy.value = status.shoulder.quaternionAccuracy;
+  gComponents.platform.quaternion.i = pnQuat.x;
+  gComponents.platform.quaternion.j = pnQuat.y;
+  gComponents.platform.quaternion.k = pnQuat.z;
+  gComponents.platform.quaternion.real = pnQuat.w;
+  gComponents.platform.accuracy.value = status.platform.quaternionAccuracy;
 
   //const sEuler = euler.get(snQuat.x,  snQuat.y, snQuat.z, snQuat.w);
   const sEuler = new THREE.Euler().setFromQuaternion(snQuat);
   const pEuler = new THREE.Euler().setFromQuaternion(pnQuat);
     
-  gComponents.status.shoulder.roll.innerHTML = `${sEuler.x.toFixed(3)} / ${THREE.MathUtils.radToDeg(sEuler.x).toFixed(3)}`;
-  gComponents.status.shoulder.pitch.innerHTML = `${sEuler.y.toFixed(3)} / ${THREE.MathUtils.radToDeg(sEuler.y).toFixed(3)}`;
-  gComponents.status.shoulder.yaw.innerHTML = `${sEuler.z.toFixed(3)} / ${THREE.MathUtils.radToDeg(sEuler.z).toFixed(3)}`;
-  gComponents.status.platform.roll.innerHTML = `${pEuler.x.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.x).toFixed(3)}`;
-  gComponents.status.platform.pitch.innerHTML = `${pEuler.y.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.y).toFixed(3)}`;
-  gComponents.status.platform.yaw.innerHTML = `${pEuler.z.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.z).toFixed(3)}`;
+  gComponents.shoulder.euler.roll = `${sEuler.x.toFixed(3)} / ${THREE.MathUtils.radToDeg(sEuler.x).toFixed(3)}`;
+  gComponents.shoulder.euler.pitch = `${sEuler.y.toFixed(3)} / ${THREE.MathUtils.radToDeg(sEuler.y).toFixed(3)}`;
+  gComponents.shoulder.euler.yaw = `${sEuler.z.toFixed(3)} / ${THREE.MathUtils.radToDeg(sEuler.z).toFixed(3)}`;
+  gComponents.platform.euler.roll = `${pEuler.x.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.x).toFixed(3)}`;
+  gComponents.platform.euler.pitch = `${pEuler.y.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.y).toFixed(3)}`;
+  gComponents.platform.euler.yaw = `${pEuler.z.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.z).toFixed(3)}`;
 
-  gComponents.status.claw.distance.innerHTML = status.claw.distance;
-  gComponents.status.claw.distanceType.innerHTML = status.claw.distanceType;
-
-  gComponents.status.arm.setStatus(status.arm);
+  gComponents.claw.distance.value = status.claw.distance;
+  gComponents.claw.distanceType.value = status.claw.distanceType;
   gShoulder = snQuat;
   gPlatform = pnQuat;
 }

@@ -25,9 +25,10 @@ body {
   border-radius: 0.5rem;
 }
 
-intention-error-message {
+.message {
   grid-column-start: 1;
   grid-column-end: 6;
+  padding: 0.5rem;
 }
 
 .led-container {
@@ -57,4 +58,8 @@ intention-led .title {
 .accuracy input,
 .distance input {
   width: 100px;
+}
+
+intention-error-message {
+  color: rgb(255, 119, 119);
 }
