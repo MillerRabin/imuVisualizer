@@ -39,19 +39,19 @@ body {
   padding: 1rem;
 }
 
-intention-euler intention-float-value input {
+i-euler i-float-value input {
   max-width: 100px;
 }
 
-intention-dashboard-page intention-grid-panel > intention-flex-panel {
+i-dashboard-page i-grid-panel > i-flex-panel {
   width: auto !important;
 }
 
-.quat > intention-flex-panel {
+.quat > i-flex-panel {
   width: 50%;
 }
 
-intention-led .title {
+i-led .title {
   white-space: nowrap;
 }
 
@@ -60,6 +60,6 @@ intention-led .title {
   width: 100px;
 }
 
-intention-error-message {
+i-error-message {
   color: rgb(255, 119, 119);
 }

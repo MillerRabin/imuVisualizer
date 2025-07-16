@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>RoboArm imu tester</title>
-    <link rel="stylesheet" href="/styles/index.css" />
-    <script type="importmap">
+
+<head>
+  <meta charset="utf-8">
+  <title>RoboArm imu tester</title>
+  <link rel="stylesheet" href="/styles/index.css" />
+  <script type="importmap">
       {
         "imports": {
           "three": "/node_modules/three/build/three.module.js",
@@ -12,124 +13,129 @@
         }
       }
     </script>
-    <script type="module" src="/index.js"></script>
-  </head>
-  <body>
-    <intention-dashboard-page class="application" name="application">
-      <intention-grid-panel row-count="3" col-count="5" gap="1rem" name="grid">
-        <div class="renderer" name="renderer"></div>
-        <intention-flex-panel class="platform panel" direction="column">
-          <intention-title size="2">Platform</intention-title>
-          <intention-flex-panel class="led-container" direction="column">
-            <intention-led name="platform.online">Online</intention-led>
-            <intention-led name="platform.can-sending">CAN Sending</intention-led>
-          </intention-flex-panel>
-          <intention-flex-panel class="container" data-direction="column">
-            <intention-title size="3">Rotate</intention-title>
-            <intention-euler class="rotate" name="platform.rotate"></intention-euler>
-            <intention-flex-panel class="quat">
-              <intention-flex-panel direction="column">
-                <intention-title size="3">Quaternion</intention-title>
-                <intention-quaternion class="platform-quat" read-only="true" name="platform.quaternion"></intention-quaternion>
-              </intention-flex-panel>
-              <intention-flex-panel direction="column">
-                <intention-title size="3">Euler</intention-title>
-                <intention-euler class="platform-euler" read-only="true" name="platform.euler"></intention-euler>
-              </intention-flex-panel>
-            </intention-flex-panel>
-            <intention-float-value class="platform-accuracy accuracy" read-only="true" name="platform.accuracy">Accuracy:</intention-float-value>            
-          </intention-flex-panel>
-        </intention-flex-panel>
-        <intention-flex-panel class="shoulder panel" data-direction="column">
-          <intention-title size="2">Shoulder</intention-title>
-          <intention-flex-panel class="led-container" data-direction="column">
-            <intention-led>Online</intention-led>
-          </intention-flex-panel>
-          <intention-flex-panel class="container" data-direction="column">
-            <intention-title size="3">Rotate</intention-title>
-            <intention-euler class="rotate" name="shoulder.rotate"></intention-euler>
-            <intention-flex-panel>
-              <intention-flex-panel direction="column">
-                <intention-title size="3">Quaternion</intention-title>
-                <intention-quaternion class="shoulder-quat" read-only="true" name="shoulder.quaternion"></intention-quaternion>
-                <intention-float-value class="shoulder-accuracy accuracy" read-only="true" name="shoulder.accuracy">Accuracy:</intention-float-value>            
-              </intention-flex-panel>
-              <intention-flex-panel direction="column">
-                <intention-title size="3">Euler</intention-title>
-                <intention-euler class="shoulder-euler" read-only="true" name="shoulder.euler"></intention-euler>
-              </intention-flex-panel>
-            </intention-flex-panel>
-          </intention-flex-panel>
-        </intention-flex-panel>
-        <intention-flex-panel class="elbow panel" data-direction="column">
-          <intention-title size="2">Elbow</intention-title>
-          <intention-flex-panel class="led-container" data-direction="column">
-            <intention-led>Online</intention-led>
-          </intention-flex-panel>
-          <intention-flex-panel class="container" data-direction="column">
-            <intention-title size="3">Rotate</intention-title>
-            <intention-euler class="rotate"></intention-euler>
-            <intention-flex-panel>
-              <intention-flex-panel direction="column">
-                <intention-title size="3">Quaternion</intention-title>
-                <intention-quaternion class="elbow-quat" read-only="true"></intention-quaternion>
-                <intention-float-value class="elbow-accuracy accuracy" read-only="true">Accuracy:</intention-float-value>            
-              </intention-flex-panel>
-              <intention-flex-panel direction="column">
-                <intention-title size="3">Euler</intention-title>
-                <intention-euler class="elbow-euler" read-only="true"></intention-euler>
-              </intention-flex-panel>
-            </intention-flex-panel>
-          </intention-flex-panel>
-        </intention-flex-panel>
-        <intention-flex-panel class="wrist panel" data-direction="column">
-          <intention-title size="2">Wrist</intention-title>
-          <intention-flex-panel class="led-container" data-direction="column">
-            <intention-led>Online</intention-led>
-          </intention-flex-panel>
-          <intention-flex-panel class="container" data-direction="column">
-            <intention-title size="3">Rotate</intention-title>
-            <intention-euler class="rotate"></intention-euler>
-           <intention-flex-panel>
-              <intention-flex-panel direction="column">
-                <intention-title size="3">Quaternion</intention-title>
-                <intention-quaternion class="wrist-quat" read-only="true"></intention-quaternion>
-                <intention-float-value class="wrist-accuracy accuracy" read-only="true">Accuracy:</intention-float-value>            
-              </intention-flex-panel>
-              <intention-flex-panel direction="column">
-                <intention-title size="3">Euler</intention-title>
-                <intention-euler class="wrist-euler" read-only="true"></intention-euler>
-              </intention-flex-panel>
-           </intention-flex-panel>
-          </intention-flex-panel>
-        </intention-flex-panel>
-        <intention-flex-panel class="claw panel" data-direction="column">
-          <intention-title size="2">Claw</intention-title>
-          <intention-flex-panel class="led-container" data-direction="column">
-            <intention-led>Online</intention-led>
-          </intention-flex-panel>
-          <intention-flex-panel class="container" data-direction="column">
-            <intention-title size="3">Rotate</intention-title>
-            <intention-euler class="rotate"></intention-euler>
-            <intention-flex-panel>
-              <intention-flex-panel direction="column">
-                <intention-title size="3">Quaternion</intention-title>
-                <intention-quaternion class="claw-quat" read-only="true"></intention-quaternion>
-                <intention-float-value class="claw-accuracy accuracy" read-only="true">Accuracy:</intention-float-value>
-              </intention-flex-panel>
-              <intention-flex-panel direction="column">
-                <intention-title size="3">Euler</intention-title>
-                <intention-euler class="claw-euler" read-only="true"></intention-euler>
-              </intention-flex-panel>
-            </intention-flex-panel>
-            <intention-float-value class="claw-distance distance" read-only="true" name="claw.distance">Distance:</intention-float-value>
-            <intention-float-value class="claw-distance-type distance" read-only="true" name="claw.distance-type">Measure Type:</intention-float-value>
-          </intention-flex-panel>            
-        </intention-flex-panel>
-        <intention-flex-panel class="message">
-          <intention-error-message name="error"></intention-error-message>
-        </intention-flex-panel>
-      </intention-grid-panel>          
-    </intention-dashboard-page>
-  </body>
-</html>		
+  <script type="module" src="/index.js"></script>
+</head>
+
+<body>
+  <i-dashboard-page class="application" name="application">
+    <i-grid-panel row-count="3" col-count="5" gap="1rem" name="grid">
+      <div class="renderer" name="renderer"></div>
+      <i-flex-panel class="platform panel" direction="column">
+        <i-title size="2">Platform</i-title>
+        <i-flex-panel class="led-container" direction="column">
+          <i-led name="platform.online">Online</i-led>
+          <i-led name="platform.can-sending">CAN Sending</i-led>
+        </i-flex-panel>
+        <i-flex-panel class="container" data-direction="column">
+          <i-title size="3">Rotate</i-title>
+          <i-euler class="rotate" name="platform.rotate"></i-euler>
+          <i-flex-panel class="quat">
+            <i-flex-panel direction="column">
+              <i-title size="3">Quaternion</i-title>
+              <i-quaternion class="platform-quat" read-only="true" name="platform.quaternion"></i-quaternion>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Euler</i-title>
+              <i-euler class="platform-euler" read-only="true" name="platform.euler"></i-euler>
+            </i-flex-panel>
+          </i-flex-panel>
+          <i-float-value class="platform-accuracy accuracy" read-only="true"
+            name="platform.accuracy">Accuracy:</i-float-value>
+        </i-flex-panel>
+      </i-flex-panel>
+      <i-flex-panel class="shoulder panel" data-direction="column">
+        <i-title size="2">Shoulder</i-title>
+        <i-flex-panel class="led-container" data-direction="column">
+          <i-led>Online</i-led>
+        </i-flex-panel>
+        <i-flex-panel class="container" data-direction="column">
+          <i-title size="3">Rotate</i-title>
+          <i-euler class="rotate" name="shoulder.rotate"></i-euler>
+          <i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Quaternion</i-title>
+              <i-quaternion class="shoulder-quat" read-only="true" name="shoulder.quaternion"></i-quaternion>
+              <i-float-value class="shoulder-accuracy accuracy" read-only="true"
+                name="shoulder.accuracy">Accuracy:</i-float-value>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Euler</i-title>
+              <i-euler class="shoulder-euler" read-only="true" name="shoulder.euler"></i-euler>
+            </i-flex-panel>
+          </i-flex-panel>
+        </i-flex-panel>
+      </i-flex-panel>
+      <i-flex-panel class="elbow panel" data-direction="column">
+        <i-title size="2">Elbow</i-title>
+        <i-flex-panel class="led-container" data-direction="column">
+          <i-led>Online</i-led>
+        </i-flex-panel>
+        <i-flex-panel class="container" data-direction="column">
+          <i-title size="3">Rotate</i-title>
+          <i-euler class="rotate"></i-euler>
+          <i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Quaternion</i-title>
+              <i-quaternion class="elbow-quat" read-only="true"></i-quaternion>
+              <i-float-value class="elbow-accuracy accuracy" read-only="true">Accuracy:</i-float-value>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Euler</i-title>
+              <i-euler class="elbow-euler" read-only="true"></i-euler>
+            </i-flex-panel>
+          </i-flex-panel>
+        </i-flex-panel>
+      </i-flex-panel>
+      <i-flex-panel class="wrist panel" data-direction="column">
+        <i-title size="2">Wrist</i-title>
+        <i-flex-panel class="led-container" data-direction="column">
+          <i-led>Online</i-led>
+        </i-flex-panel>
+        <i-flex-panel class="container" data-direction="column">
+          <i-title size="3">Rotate</i-title>
+          <i-euler class="rotate"></i-euler>
+          <i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Quaternion</i-title>
+              <i-quaternion class="wrist-quat" read-only="true"></i-quaternion>
+              <i-float-value class="wrist-accuracy accuracy" read-only="true">Accuracy:</i-float-value>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Euler</i-title>
+              <i-euler class="wrist-euler" read-only="true"></i-euler>
+            </i-flex-panel>
+          </i-flex-panel>
+        </i-flex-panel>
+      </i-flex-panel>
+      <i-flex-panel class="claw panel" data-direction="column">
+        <i-title size="2">Claw</i-title>
+        <i-flex-panel class="led-container" data-direction="column">
+          <i-led>Online</i-led>
+        </i-flex-panel>
+        <i-flex-panel class="container" data-direction="column">
+          <i-title size="3">Rotate</i-title>
+          <i-euler class="rotate"></i-euler>
+          <i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Quaternion</i-title>
+              <i-quaternion class="claw-quat" read-only="true"></i-quaternion>
+              <i-float-value class="claw-accuracy accuracy" read-only="true">Accuracy:</i-float-value>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Euler</i-title>
+              <i-euler class="claw-euler" read-only="true"></i-euler>
+            </i-flex-panel>
+          </i-flex-panel>
+          <i-float-value class="claw-distance distance" read-only="true" name="claw.distance">Distance:</i-float-value>
+          <i-float-value class="claw-distance-type distance" read-only="true" name="claw.distance-type">Measure
+            Type:</i-float-value>
+        </i-flex-panel>
+      </i-flex-panel>
+      <i-flex-panel class="message">
+        <i-error-message name="error"></i-error-message>
+      </i-flex-panel>
+    </i-grid-panel>
+  </i-dashboard-page>
+</body>
+
+</html>

@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 import arm from './modules/arm.js';
-import 'https://components.int-t.com/core/euler/euler.js';
-import 'https://components.int-t.com/core/quaternion/quaternion.js';
-import 'https://components.int-t.com/core/floatValue/floatValue.js';
-import 'https://components.int-t.com/core/led/led.js';
-import 'https://components.int-t.com/core/flexPanel/flexPanel.js';
-import 'https://components.int-t.com/core/errorMessage/errorMessage.js';
-import 'https://components.int-t.com/core/title/title.js';
-import 'https://components.int-t.com/core/gridPanel/gridPanel.js';
-import 'https://components.int-t.com/widgets/dashboard/page/page.js';
+import 'https://components.int-t.com/current/components/euler/euler.js';
+import 'https://components.int-t.com/current/components/quaternion/quaternion.js';
+import 'https://components.int-t.com/current/components/floatValue/floatValue.js';
+import 'https://components.int-t.com/current/components/led/led.js';
+import 'https://components.int-t.com/current/components/flexPanel/flexPanel.js';
+import 'https://components.int-t.com/current/components/errorMessage/errorMessage.js';
+import 'https://components.int-t.com/current/components/title/title.js';
+import 'https://components.int-t.com/current/components/gridPanel/gridPanel.js';
+import 'https://components.int-t.com/current/widgets/dashboard/page/page.js';
 
 
 import './components/status/status.js';
@@ -154,12 +154,12 @@ async function armCallback(status) {
   const sEuler = new THREE.Euler().setFromQuaternion(snQuat);
   const pEuler = new THREE.Euler().setFromQuaternion(pnQuat);
     
-  gComponents.shoulder.euler.roll = `${sEuler.x.toFixed(3)} / ${THREE.MathUtils.radToDeg(sEuler.x).toFixed(3)}`;
-  gComponents.shoulder.euler.pitch = `${sEuler.y.toFixed(3)} / ${THREE.MathUtils.radToDeg(sEuler.y).toFixed(3)}`;
-  gComponents.shoulder.euler.yaw = `${sEuler.z.toFixed(3)} / ${THREE.MathUtils.radToDeg(sEuler.z).toFixed(3)}`;
-  gComponents.platform.euler.roll = `${pEuler.x.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.x).toFixed(3)}`;
-  gComponents.platform.euler.pitch = `${pEuler.y.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.y).toFixed(3)}`;
-  gComponents.platform.euler.yaw = `${pEuler.z.toFixed(3)} / ${THREE.MathUtils.radToDeg(pEuler.z).toFixed(3)}`;
+  gComponents.shoulder.euler.roll = sEuler.x;
+  gComponents.shoulder.euler.pitch = sEuler.y;
+  gComponents.shoulder.euler.yaw = sEuler.z;
+  gComponents.platform.euler.roll = pEuler.x;
+  gComponents.platform.euler.pitch = pEuler.y;
+  gComponents.platform.euler.yaw = pEuler.z;
 
   gComponents.claw.distance.value = status.claw.distance;
   gComponents.claw.distanceType.value = status.claw.distanceType;
