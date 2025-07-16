@@ -43,7 +43,7 @@ i-euler i-float-value input {
   max-width: 100px;
 }
 
-i-dashboard-page i-grid-panel > i-flex-panel {
+i-dashboard-application i-grid-panel > i-flex-panel {
   width: auto !important;
 }
 

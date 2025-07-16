@@ -8,7 +8,7 @@ import 'https://components.int-t.com/current/components/flexPanel/flexPanel.js';
 import 'https://components.int-t.com/current/components/errorMessage/errorMessage.js';
 import 'https://components.int-t.com/current/components/title/title.js';
 import 'https://components.int-t.com/current/components/gridPanel/gridPanel.js';
-import 'https://components.int-t.com/current/widgets/dashboard/page/page.js';
+import 'https://components.int-t.com/current/widgets/dashboard/application/application.js';
 
 
 import './components/status/status.js';
