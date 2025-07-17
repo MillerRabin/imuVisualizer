@@ -43,6 +43,8 @@ const gStatus = {
     wristOK: false,
     clawOK: false,
     clawRangeOK: false,
+    engines: false,
+    camera: false
   },
   error: null
 };
@@ -54,7 +56,7 @@ const expr = {
 
 
 async function getStatus() {
-  const res = await fetch('http://192.168.1.120/status', {
+  const res = await fetch('http://192.168.1.21/status', {
     method: 'POST',
     signal: AbortSignal.timeout(500),
     headers: {
@@ -99,9 +101,16 @@ async function getStatus() {
   gStatus.arm.wristOK = obj.status.wristOK;
   gStatus.arm.clawOK = obj.status.clawOK;
   gStatus.arm.clawRangeOK = obj.status.clawRangeOK;
-  
+
+  gStatus.claw.i = obj.claw.i;
+  gStatus.claw.j = obj.claw.j;
+  gStatus.claw.k = obj.claw.k;
+  gStatus.claw.real = obj.claw.real;      
   gStatus.claw.distance = obj.claw.distance;
   gStatus.claw.distanceType = obj.claw.distanceMeasureType;
+
+  gStatus.arm.enginesEnabled = obj.powerManagement.enginesEnabled;
+  gStatus.arm.cameraEnabled = obj.powerManagement.cameraEnabled;
   expr.onupdate?.(gStatus);
 }
   
@@ -109,7 +118,13 @@ async function loopStatus() {
   try {
     await getStatus();    
   } catch (e) {  
-    gStatus.arm.online = false;    
+    gStatus.arm.online = false;
+    gStatus.arm.canSendOK = false;
+    gStatus.arm.shoulderOK = false;
+    gStatus.arm.elbowOK = false;
+    gStatus.arm.wristOK = false;
+    gStatus.arm.clawOK = false;
+    gStatus.arm.clawRangeOK = false;
     gStatus.error = e.message;
     expr.onupdate?.(gStatus);
   }

@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="utf-8">
-  <title>RoboArm imu tester</title>
-  <link rel="stylesheet" href="/styles/index.css" />
+  <title>RoboArm imu tester</title>  
+  <link rel="stylesheet" href="/styles/index.css" />  
   <script type="importmap">
       {
         "imports": {
@@ -17,14 +17,20 @@
 </head>
 
 <body>
-  <i-dashboard-application class="application" name="application">
+  <imu-application class="application" name="application">
     <i-grid-panel row-count="3" col-count="5" gap="1rem" name="grid">
       <div class="renderer" name="renderer"></div>
       <i-flex-panel class="platform panel" direction="column">
         <i-title size="2">Platform</i-title>
-        <i-flex-panel class="led-container" direction="column">
-          <i-led name="platform.online">Online</i-led>
-          <i-led name="platform.can-sending">CAN Sending</i-led>
+        <i-flex-panel class="led-container">
+          <i-flex-panel direction="column">
+            <i-led name="platform.online">Online</i-led>
+            <i-led name="platform.can-sending">CAN Sending</i-led>
+          </i-flex-panel>          
+          <i-flex-panel direction="column">
+            <i-led name="platform.engines">Engines</i-led>
+            <i-led name="platform.camera">Camera</i-led>
+          </i-flex-panel>
         </i-flex-panel>
         <i-flex-panel class="container" data-direction="column">
           <i-title size="3">Rotate</i-title>
@@ -42,16 +48,20 @@
           <i-float-value class="platform-accuracy accuracy" read-only="true"
             name="platform.accuracy">Accuracy:</i-float-value>
         </i-flex-panel>
+        <i-flex-panel class="buttons">
+          <i-toggle-button name="platform.toggleEngines" action-click="toggleEngines">Engines</i-toggle-button>
+          <i-toggle-button name="platform.toggleCamera" action-click="toggleCamera">Camera</i-toggle-button>
+        </i-flex-panel>
       </i-flex-panel>
       <i-flex-panel class="shoulder panel" data-direction="column">
         <i-title size="2">Shoulder</i-title>
         <i-flex-panel class="led-container" data-direction="column">
-          <i-led>Online</i-led>
+          <i-led name="shoulder.online">Online</i-led>
         </i-flex-panel>
         <i-flex-panel class="container" data-direction="column">
           <i-title size="3">Rotate</i-title>
           <i-euler class="rotate" name="shoulder.rotate"></i-euler>
-          <i-flex-panel>
+          <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
               <i-quaternion class="shoulder-quat" read-only="true" name="shoulder.quaternion"></i-quaternion>
@@ -68,20 +78,21 @@
       <i-flex-panel class="elbow panel" data-direction="column">
         <i-title size="2">Elbow</i-title>
         <i-flex-panel class="led-container" data-direction="column">
-          <i-led>Online</i-led>
+          <i-led name="elbow.online">Online</i-led>
         </i-flex-panel>
         <i-flex-panel class="container" data-direction="column">
           <i-title size="3">Rotate</i-title>
-          <i-euler class="rotate"></i-euler>
-          <i-flex-panel>
+          <i-euler class="rotate" name="euler.rotate"></i-euler>
+          <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
-              <i-quaternion class="elbow-quat" read-only="true"></i-quaternion>
-              <i-float-value class="elbow-accuracy accuracy" read-only="true">Accuracy:</i-float-value>
+              <i-quaternion class="elbow-quat" read-only="true" name="elbow.quaternion"></i-quaternion>
+              <i-float-value class="elbow-accuracy accuracy" read-only="true" 
+                name="elbow.accuracy">Accuracy:</i-float-value>
             </i-flex-panel>
             <i-flex-panel direction="column">
               <i-title size="3">Euler</i-title>
-              <i-euler class="elbow-euler" read-only="true"></i-euler>
+              <i-euler class="elbow-euler" read-only="true" name="elbow.euler"></i-euler>
             </i-flex-panel>
           </i-flex-panel>
         </i-flex-panel>
@@ -89,20 +100,20 @@
       <i-flex-panel class="wrist panel" data-direction="column">
         <i-title size="2">Wrist</i-title>
         <i-flex-panel class="led-container" data-direction="column">
-          <i-led>Online</i-led>
+          <i-led name="wrist.online">Online</i-led>
         </i-flex-panel>
         <i-flex-panel class="container" data-direction="column">
           <i-title size="3">Rotate</i-title>
-          <i-euler class="rotate"></i-euler>
-          <i-flex-panel>
+          <i-euler class="rotate" name="wrist.rotate"></i-euler>
+          <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
-              <i-quaternion class="wrist-quat" read-only="true"></i-quaternion>
-              <i-float-value class="wrist-accuracy accuracy" read-only="true">Accuracy:</i-float-value>
+              <i-quaternion class="wrist-quat" read-only="true" name="wrist.quaternion"></i-quaternion>
+              <i-float-value class="wrist-accuracy accuracy" read-only="true" name="wrist.accuracy">Accuracy:</i-float-value>
             </i-flex-panel>
             <i-flex-panel direction="column">
               <i-title size="3">Euler</i-title>
-              <i-euler class="wrist-euler" read-only="true"></i-euler>
+              <i-euler class="wrist-euler" read-only="true" name="wrist.euler"></i-euler>
             </i-flex-panel>
           </i-flex-panel>
         </i-flex-panel>
@@ -110,20 +121,20 @@
       <i-flex-panel class="claw panel" data-direction="column">
         <i-title size="2">Claw</i-title>
         <i-flex-panel class="led-container" data-direction="column">
-          <i-led>Online</i-led>
+          <i-led name="claw.online">Online</i-led>
         </i-flex-panel>
         <i-flex-panel class="container" data-direction="column">
           <i-title size="3">Rotate</i-title>
-          <i-euler class="rotate"></i-euler>
-          <i-flex-panel>
+          <i-euler class="rotate" name="claw.rotate"></i-euler>
+          <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
-              <i-quaternion class="claw-quat" read-only="true"></i-quaternion>
+              <i-quaternion class="claw-quat" read-only="true" name="claw.quaternion"></i-quaternion>
               <i-float-value class="claw-accuracy accuracy" read-only="true">Accuracy:</i-float-value>
             </i-flex-panel>
             <i-flex-panel direction="column">
               <i-title size="3">Euler</i-title>
-              <i-euler class="claw-euler" read-only="true"></i-euler>
+              <i-euler class="claw-euler" read-only="true" name="claw.euler"></i-euler>
             </i-flex-panel>
           </i-flex-panel>
           <i-float-value class="claw-distance distance" read-only="true" name="claw.distance">Distance:</i-float-value>
@@ -135,7 +146,7 @@
         <i-error-message name="error"></i-error-message>
       </i-flex-panel>
     </i-grid-panel>
-  </i-dashboard-application>
+  </imu-application>
 </body>
 
 </html>

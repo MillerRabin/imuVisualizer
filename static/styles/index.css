@@ -14,11 +14,12 @@ body {
 }
 
 .renderer {
-  width: calc(100% - 2rem);
+  width: calc(100%);
   height: 40vh;
   grid-column-start: 1;
   grid-column-end: 6;
   border-radius: 0.5rem;
+  margin: 0 auto;
 }
 
 .renderer canvas {
@@ -33,17 +34,14 @@ body {
 
 .led-container {
   height: 45px;
+  gap: 2rem;
 }
 
 .panel {
   padding: 1rem;
 }
 
-i-euler i-float-value input {
-  max-width: 100px;
-}
-
-i-dashboard-application i-grid-panel > i-flex-panel {
+i-application i-grid-panel > i-flex-panel {
   width: auto !important;
 }
 
@@ -60,6 +58,78 @@ i-led .title {
   width: 100px;
 }
 
-i-error-message {
-  color: rgb(255, 119, 119);
+imu-application {
+  padding: 1rem;
+  margin: 0;
+  width: 100%;
+  display: block;
+  background-color: #1b1845;
+  color: #fcfdff;
+  height: 100%;
+  min-height: 100%;
 }
+
+imu-application i-grid-panel {
+  height: 100%;
+}
+
+imu-application input {
+  border-color: #2b72de;
+  background-color: #292864;
+  color: #fcfdff;
+  padding: 0.25rem;
+  width: 100%
+}
+
+imu-application i-flex-panel {
+  background-color: #2b2968;
+  border-radius: 0.5rem;
+}
+
+i-error-message {
+  height: 1rem;
+  color: rgb(255, 119, 119) !important;
+}
+
+i-flex-panel {
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+i-flex-panel.quat {
+  width: 100%;
+}
+
+
+
+imu-application .buttons {
+  width: 100%;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+imu-application .buttons > * {
+  width: 50%;  
+}
+
+    i-toggle-button {
+      display: block;
+    }
+  
+    i-toggle-button input+button {
+      width: 100%;
+      display: block;
+      padding: 1rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      color: #333;
+      background: linear-gradient(145deg, #f0f0f0, #dcdcdc);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+  
+    i-toggle-button input:checked+button {
+      color: white;
+      background: linear-gradient(135deg, #4caf50, #388e3c);
+    }
