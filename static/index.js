@@ -10,6 +10,8 @@ import 'https://components.int-t.com/current/components/errorMessage/errorMessag
 import 'https://components.int-t.com/current/components/title/title.js';
 import 'https://components.int-t.com/current/components/gridPanel/gridPanel.js';
 import 'https://components.int-t.com/current/components/toggleButton/toggleButton.js';
+import euler from './modules/euler.js';
+import quaternion from './modules/quaternion.js';
 
 arm.onupdate = armCallback;
 
@@ -28,7 +30,6 @@ function createCube(materials, position) {
   cube.position.z = position.z;
   return cube;
 }
-
 
 function ready() {
   function animate() {
@@ -100,63 +101,18 @@ async function armCallback(status) {
   
   gComponents.error.message = '';
   
-  const poQuat = new THREE.Quaternion(status.platform.i, status.platform.j, status.platform.k, status.platform.real);
-  const soQuat = new THREE.Quaternion(status.shoulder.i, status.shoulder.j, status.shoulder.k, status.shoulder.real);
+  const poQuat = new THREE.Quaternion(status.platform.i, status.platform.j, status.platform.k, status.platform.real);  
   const eoQuat = new THREE.Quaternion(status.elbow.i, status.elbow.j, status.elbow.k, status.elbow.real);  
   const woQuat = new THREE.Quaternion(status.wrist.i, status.wrist.j, status.wrist.k, status.wrist.real);
   const coQuat = new THREE.Quaternion(status.claw.i, status.claw.j, status.claw.k, status.claw.real);
-  
-  //const snQuat = soQuat;
-  //const pnQuat = poQuat;
-  
-  const dq = Math.sqrt(2) / 2;
-  
-  const pmQuat = new THREE.Quaternion(0, 0, 0, 1); //East-South-Down
-  //const pmQuat = new THREE.Quaternion(0, -1, 0, 0); //East-South-Down
-  const psQuat = gComponents.platform.rotate.quaternion;
-  const prQuat = psQuat.multiplyQuaternions(pmQuat, psQuat);
-      
-  //const srQuat = new THREE.Quaternion(-0.5, -0.5, 0.5, -0.5); //Up-East-North
-
-  const smQuat = new THREE.Quaternion(0, 0, 0, 1);    //East North Up
-  //const srQuat = new THREE.Quaternion(0, 0, dq, dq); //North West Up 
-  //const srQuat = new THREE.Quaternion(0, 0, 1, 0); //West South Up 
-  //const srQuat = new THREE.Quaternion(0, 0, -dq, dq) //South East Up 
-  //const smQuat = new THREE.Quaternion(0, -1, 0, 0) //East South Down 
-  //const smQuat = new THREE.Quaternion(0.5, -0.5, -0.5, 0.5) //South Up West 
-  const ssQuat = gComponents.shoulder.rotate.quaternion;
-  const srQuat = ssQuat.multiplyQuaternions(smQuat, ssQuat);
-      
-  //const srQuat = new THREE.Quaternion(-dq, -dq, 0, 0) //North East Down 
-  //const srQuat = new THREE.Quaternion(-1, 0, 0, 0) //West North Down 
-  //const srQuat = new THREE.Quaternion(-dq, dq, 0, 0) //South West Down 
-  //const srQuat = new THREE.Quaternion(0, -dq, dq, 0) //Up South East 
-  //const srQuat = new THREE.Quaternion(-0.5, -0.5, 0.5, 0.5) //North Up East 
-  //const srQuat = new THREE.Quaternion(-dq, 0, 0, dq) //Down North East 
-  //const srQuat = new THREE.Quaternion(-0.5, 0.5, -0.5, 0.5) //South Down East 
-  //const srQuat = new THREE.Quaternion(-dq, 0, 0, -dq) //Up North West 
-  //const srQuat = new THREE.Quaternion(-0.5, -0.5, -0.5, -0.5) //North Down West 
-  //const srQuat = new THREE.Quaternion(0, -dq, -dq, 0) //Down South West 
-  //const srQuat = new THREE.Quaternion(0.5, -0.5, -0.5, 0.5) //South Up West 
-  //const srQuat = new THREE.Quaternion(-0.5, -0.5, 0.5, -0.5); //Up East North 
-  //const srQuat = new THREE.Quaternion(-dq, 0, dq, 0) //West Up North 
-  //const srQuat = new THREE.Quaternion(-0.5, 0.5, 0.5, 0.5) //Down West North 
-  //const srQuat = new THREE.Quaternion(0, -dq, 0, -dq) //East Down North 
-  //const srQuat = new THREE.Quaternion(0.5, -0.5, 0.5, 0.5) //Up West South 
-  //const srQuat = new THREE.Quaternion(-dq, 0, -dq, 0) //West Down South 
-  //const srQuat = new THREE.Quaternion(-0.5, -0.5, -0.5, 0.5) //Down East South 
-  //const srQuat = new THREE.Quaternion(0, -dq, 0, dq) //East Up South 
-  
-  const pnQuat = poQuat.multiplyQuaternions(prQuat, poQuat);
-  pnQuat.normalize();
-    
-  gComponents.platform.quaternion.i = pnQuat.x;
-  gComponents.platform.quaternion.j = pnQuat.y;
-  gComponents.platform.quaternion.k = pnQuat.z;
-  gComponents.platform.quaternion.real = pnQuat.w;
+              
+  gComponents.platform.quaternion.i = poQuat.x;
+  gComponents.platform.quaternion.j = poQuat.y;
+  gComponents.platform.quaternion.k = poQuat.z;
+  gComponents.platform.quaternion.real = poQuat.w;
   gComponents.platform.accuracy.value = status.platform.quaternionAccuracy;
   
-  const pEuler = new THREE.Euler().setFromQuaternion(pnQuat);
+  const pEuler = euler.get(poQuat.x, poQuat.y, poQuat.z, poQuat.w);
   gComponents.platform.euler.roll = (pEuler.x * (180 / Math.PI)).toFixed(3);
   gComponents.platform.euler.pitch = (pEuler.y * (180 / Math.PI)).toFixed(3);
   gComponents.platform.euler.yaw = (pEuler.z * (180 / Math.PI)).toFixed(3);
@@ -165,22 +121,32 @@ async function armCallback(status) {
   gComponents.platform.canSending.value = status.arm.canSendOK;
   gComponents.platform.engines.value = status.arm.enginesEnabled;
   gComponents.platform.camera.value = status.arm.cameraEnabled;
+  gComponents.platform.toggleEngines.value = status.arm.enginesEnabled;
+  gComponents.platform.toggleCamera.value = status.arm.cameraEnabled;
 
-  const snQuat = soQuat.multiplyQuaternions(srQuat, soQuat);
-  snQuat.normalize();
+  const sr = quaternion.invert(quaternion.fromEuler(
+    gComponents.shoulder.rotate.roll * (Math.PI / 180),
+    gComponents.shoulder.rotate.pitch * (Math.PI / 180),
+    gComponents.shoulder.rotate.yaw * (Math.PI / 180)
+  ));
+  const scQuat = quaternion.multiply(sr, { i: status.shoulder.i, j: status.shoulder.j, k: status.shoulder.k, real: status.shoulder.real});  
+  const soQuat = new THREE.Quaternion(scQuat.i, scQuat.j, scQuat.k, scQuat.real);
   
-  gComponents.shoulder.quaternion.i = snQuat.x;
-  gComponents.shoulder.quaternion.j = snQuat.y;
-  gComponents.shoulder.quaternion.k = snQuat.z;
-  gComponents.shoulder.quaternion.real = snQuat.w;
+  gComponents.shoulder.quaternion.i = soQuat.x;
+  gComponents.shoulder.quaternion.j = soQuat.y;
+  gComponents.shoulder.quaternion.k = soQuat.z;
+  gComponents.shoulder.quaternion.real = soQuat.w;
+
   gComponents.shoulder.accuracy.value = status.shoulder.quaternionAccuracy;
   gComponents.shoulder.online.value = status.arm.shoulderOK;
-  
-  //const sEuler = euler.get(snQuat.x,  snQuat.y, snQuat.z, snQuat.w);
-  const sEuler = new THREE.Euler().setFromQuaternion(snQuat);
+    
+  const sEuler = euler.get(soQuat.x, soQuat.y, soQuat.z, soQuat.w);
   gComponents.shoulder.euler.roll = sEuler.x * (180 / Math.PI);
   gComponents.shoulder.euler.pitch = sEuler.y * (180 / Math.PI);
   gComponents.shoulder.euler.yaw = sEuler.z * (180 / Math.PI);
+  
+  
+  
 
   gComponents.elbow.quaternion.i = eoQuat.x;
   gComponents.elbow.quaternion.j = eoQuat.y;
@@ -219,11 +185,12 @@ async function armCallback(status) {
 
   gComponents.claw.distance.value = status.claw.distance;
   gComponents.claw.distanceType.value = status.claw.distanceType;
-  gPlatform = pnQuat;
-  gShoulder = snQuat;
+    
+  gPlatform = poQuat;
+  gShoulder = soQuat;
   gElbow = eoQuat;
   gWrist = woQuat;
-  gClaw = coQuat;  
+  gClaw = coQuat;
 }
 
 export class IMUApplication extends Application { 
@@ -231,12 +198,17 @@ export class IMUApplication extends Application {
     ready();
   }
 
-  toggleEngines(element) {
-    console.log('engines', element.value);
+  toggleEngines(element) {    
+    arm.set({ 
+      enginesEnabled: element.value
+    });
   }
 
   toggleCamera(element) {
-    console.log('camera', element.value);
+    arm.set({
+      cameraEnabled: element.value
+    });
+
   }
 }
 

@@ -7,6 +7,21 @@ function create(vector, angle) {
   return { real, i, j, k };
 }
 
+function fromEuler(roll, pitch, yaw) {
+  const cr = Math.cos(roll / 2.0);
+  const sr = Math.sin(roll / 2.0);
+  const cp = Math.cos(pitch / 2.0);
+  const sp = Math.sin(pitch / 2.0);
+  const cy = Math.cos(yaw / 2.0);
+  const sy = Math.sin(yaw / 2.0);  
+  return {
+    real: cr * cp * cy + sr * sp * sy,
+    i: sr * cp * cy - cr * sp * sy,
+    j: cr * sp * cy + sr * cp * sy,
+    k: cr * cp * sy - sr * sp * cy
+  }
+}
+
 function normal(vector) {  
   const length = Math.sqrt(vector.x ^ 2 + vector.y ^ 2 + vector.z ^ 2);
   return {
@@ -61,5 +76,8 @@ function transform(q, v) {
         
 export default {
   create,  
-  transform
+  invert,
+  transform,
+  fromEuler,
+  multiply
 }

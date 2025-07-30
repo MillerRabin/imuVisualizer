@@ -49,8 +49,8 @@
             name="platform.accuracy">Accuracy:</i-float-value>
         </i-flex-panel>
         <i-flex-panel class="buttons">
-          <i-toggle-button name="platform.toggleEngines" action-click="toggleEngines">Engines</i-toggle-button>
-          <i-toggle-button name="platform.toggleCamera" action-click="toggleCamera">Camera</i-toggle-button>
+          <i-toggle-button name="platform.toggle-engines" action-click="toggleEngines">Engines</i-toggle-button>
+          <i-toggle-button name="platform.toggle-camera" action-click="toggleCamera">Camera</i-toggle-button>
         </i-flex-panel>
       </i-flex-panel>
       <i-flex-panel class="shoulder panel" data-direction="column">
@@ -60,7 +60,7 @@
         </i-flex-panel>
         <i-flex-panel class="container" data-direction="column">
           <i-title size="3">Rotate</i-title>
-          <i-euler class="rotate" name="shoulder.rotate"></i-euler>
+          <i-euler class="rotate" name="shoulder.rotate" step="0.1"></i-euler>
           <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
@@ -82,7 +82,7 @@
         </i-flex-panel>
         <i-flex-panel class="container" data-direction="column">
           <i-title size="3">Rotate</i-title>
-          <i-euler class="rotate" name="euler.rotate"></i-euler>
+          <i-euler class="rotate" name="euler.rotate" step="0.1"></i-euler>
           <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
