@@ -96,6 +96,10 @@ function ready() {
   animate();
 }
 
+let gShoulderOffset = null;
+let gShoulderOffsetInvert = null;
+let gShoulderAlignedStart = null;
+
 async function armCallback(status) {
   if (gComponents == null) return;
   
@@ -124,13 +128,49 @@ async function armCallback(status) {
   gComponents.platform.toggleEngines.value = status.arm.enginesEnabled;
   gComponents.platform.toggleCamera.value = status.arm.cameraEnabled;
 
+  
+  /*if (gShoulderOffset == null) {
+    const sInvert = quaternion.invert(status.shoulder);
+    gShoulderOffset = quaternion.multiply(status.platform, sInvert);
+    gShoulderOffsetInvert = quaternion.invert(gShoulderOffset);
+    gShoulderAlignedStart = quaternion.multiply(gShoulderOffset, status.shoulder);
+  }
+  
+  const qShoulderAligned = quaternion.multiply(gShoulderOffset, status.shoulder);  
+
   const sr = quaternion.invert(quaternion.fromEuler(
     gComponents.shoulder.rotate.roll * (Math.PI / 180),
     gComponents.shoulder.rotate.pitch * (Math.PI / 180),
     gComponents.shoulder.rotate.yaw * (Math.PI / 180)
   ));
-  const scQuat = quaternion.multiply(sr, { i: status.shoulder.i, j: status.shoulder.j, k: status.shoulder.k, real: status.shoulder.real});  
-  const soQuat = new THREE.Quaternion(scQuat.i, scQuat.j, scQuat.k, scQuat.real);
+
+  const scQuat = quaternion.multiply(sr, qShoulderAligned);
+  //const qDiff = quaternion.multiply(scQuat, gShoulderOffsetInvert);
+
+  const ad = quaternion.angleDifference(scQuat, gShoulderAlignedStart)
+  console.log(ad.angle * (180 / Math.PI), ad.axis);*/
+  
+  if ((gShoulderOffset == null) && (!isNaN(status.shoulder.i))) {
+    gShoulderOffset = {
+      real: status.shoulder.real,
+      i: status.shoulder.i,
+      j: status.shoulder.j,
+      k: status.shoulder.k
+    };
+  }
+
+  if(gShoulderOffset != null) {
+    const qDiff = quaternion.difference(status.shoulder, gShoulderOffset);  
+    const srEuler = euler.get(qDiff.i, qDiff.j, qDiff.k, qDiff.real);
+    gComponents.shoulder.difference.roll = srEuler.x * (180 / Math.PI);
+    gComponents.shoulder.difference.pitch = srEuler.y * (180 / Math.PI);
+    gComponents.shoulder.difference.yaw = srEuler.z * (180 / Math.PI);
+  }
+
+  //gComponents.shoulder.difference.roll = ad.angle * (180 / Math.PI);
+  
+  //const soQuat = new THREE.Quaternion(qShoulderAligned.i, qShoulderAligned.j, qShoulderAligned.k, qShoulderAligned.real);
+  const soQuat = new THREE.Quaternion(status.shoulder.i, status.shoulder.j, status.shoulder.k, status.shoulder.real);
   
   gComponents.shoulder.quaternion.i = soQuat.x;
   gComponents.shoulder.quaternion.j = soQuat.y;
@@ -145,9 +185,6 @@ async function armCallback(status) {
   gComponents.shoulder.euler.pitch = sEuler.y * (180 / Math.PI);
   gComponents.shoulder.euler.yaw = sEuler.z * (180 / Math.PI);
   
-  
-  
-
   gComponents.elbow.quaternion.i = eoQuat.x;
   gComponents.elbow.quaternion.j = eoQuat.y;
   gComponents.elbow.quaternion.k = eoQuat.z;

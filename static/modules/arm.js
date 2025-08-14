@@ -1,7 +1,7 @@
 import { JSONFetchChannel } from "https://components.int-t.com/current/core/jsonFetchChannel/jsonFetchChannel.js";
 
 class ArmChannel extends JSONFetchChannel {
-  #armIP = '192.168.1.13';
+  #armIP = '192.168.1.120';
   #onupdate = null;
   #status = {
     shoulder: {

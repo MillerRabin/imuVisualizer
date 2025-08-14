@@ -73,11 +73,47 @@ function transform(q, v) {
   const tt = multiply(t, invert(q));
   return tt;
 }
+
+function normalize(q) {
+  const norm = Math.hypot(q.real, q.i, q.j, q.k);
+  return {
+    real: q.real / norm,
+    i: q.i / norm,
+    j: q.j / norm,
+    k: q.k / norm
+  }
+}
+
+function difference(qStart, qEnd) {
+  const qStartNorm = normalize(qStart);
+  const qEndNorm = normalize(qEnd);
+  const qStartInv = invert(qStartNorm);
+  return normalize(multiply(qEndNorm, qStartInv));
+}
+
+
+function toAngle(q) {
+  const qNorm = normalize(q);
+  const { real, i, j, k } = qNorm;
+
+  const angle = 2 * Math.acos(real);
+  const s = Math.sqrt(1 - real * real);
+
+  const axis = (s < 1e-6) ? [1, 0, 0] : [i / s, j / s, k / s];
+  return { angle, axis };
+}
+
+function angleDifference(qStart, qEnd) {
+  const qDiff = difference(qStart, qEnd);
+  return toAngle(qDiff);
+}
         
 export default {
+  difference,
   create,  
   invert,
   transform,
   fromEuler,
-  multiply
+  multiply,
+  angleDifference
 }
