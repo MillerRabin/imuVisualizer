@@ -277,6 +277,14 @@ async function armCallback(status) {
   gComponents.elbow.accuracy.value = status.elbow.accuracy.quaternionAccuracy;
   gComponents.elbow.online.value = status.arm.elbowOK;
 
+  gComponents.elbow.accelerometer.x = status.elbow.accelerometer?.x ?? NaN;
+  gComponents.elbow.accelerometer.y = status.elbow.accelerometer?.y ?? NaN;
+  gComponents.elbow.accelerometer.z = status.elbow.accelerometer?.z ?? NaN;
+
+  gComponents.elbow.gyroscope.x = status.elbow.gyroscope?.x ?? NaN;
+  gComponents.elbow.gyroscope.y = status.elbow.gyroscope?.y ?? NaN;
+  gComponents.elbow.gyroscope.z = status.elbow.gyroscope?.z ?? NaN;
+
   const eEuler = new THREE.Euler().setFromQuaternion(woQuat);
   gComponents.elbow.euler.roll = eEuler.x * (180 / Math.PI);
   gComponents.elbow.euler.pitch = eEuler.y * (180 / Math.PI);
@@ -288,12 +296,20 @@ async function armCallback(status) {
   gComponents.wrist.quaternion.real = woQuat.w;
   gComponents.wrist.accuracy.value = status.wrist.accuracy.quaternionAccuracy;
   gComponents.wrist.online.value = status.arm.wristOK;
-
+  
   const wEuler = new THREE.Euler().setFromQuaternion(eoQuat);
   gComponents.wrist.euler.roll = wEuler.x * (180 / Math.PI);
   gComponents.wrist.euler.pitch = wEuler.y * (180 / Math.PI);
   gComponents.wrist.euler.yaw = wEuler.z * (180 / Math.PI);
-  
+
+  gComponents.wrist.accelerometer.x = status.wrist.accelerometer?.x ?? NaN;
+  gComponents.wrist.accelerometer.y = status.wrist.accelerometer?.y ?? NaN;
+  gComponents.wrist.accelerometer.z = status.wrist.accelerometer?.z ?? NaN;
+
+  gComponents.wrist.gyroscope.x = status.wrist.gyroscope?.x ?? NaN;
+  gComponents.wrist.gyroscope.y = status.wrist.gyroscope?.y ?? NaN;
+  gComponents.wrist.gyroscope.z = status.wrist.gyroscope?.z ?? NaN;
+
   gComponents.claw.quaternion.i = coQuat.x;
   gComponents.claw.quaternion.j = coQuat.y;
   gComponents.claw.quaternion.k = coQuat.z;
@@ -311,6 +327,12 @@ async function armCallback(status) {
   gComponents.claw.accelerometer.x = status.claw.accelerometer.x;
   gComponents.claw.accelerometer.y = status.claw.accelerometer.y;
   gComponents.claw.accelerometer.z = status.claw.accelerometer.z;
+
+  gComponents.claw.gyroscope.x = status.claw.gyroscope?.x ?? NaN;
+  gComponents.claw.gyroscope.y = status.claw.gyroscope?.y ?? NaN;
+  gComponents.claw.gyroscope.z = status.claw.gyroscope?.z ?? NaN;
+
+
     
   gPlatform = poQuat;
   gShoulder = soQuat;

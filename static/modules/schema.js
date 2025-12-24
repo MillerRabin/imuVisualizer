@@ -106,9 +106,9 @@ class BarometerSchema extends Schema {
 
 class RangeSchema extends Schema {
   range = 'uint16_t';
-  measureType = 'int8_t';
-  unused1 = 'int8_t';
-  unused2 = 'int32_t';
+  measureType = 'uint8_t';
+  unused1 = 'uint8_t';
+  unused2 = 'uint32_t';
   parse(result) {
     return { range: result.range, measureType: result.measureType };
   }
