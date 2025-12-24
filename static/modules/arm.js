@@ -1,59 +1,68 @@
 import { JSONFetchChannel } from "https://components.int-t.com/current/core/jsonFetchChannel/jsonFetchChannel.js";
+import quaternion from "./quaternion.js"; 
+import schema from "./schema.js";
+
+class StatusSchema extends schema.Schema {
+  statusRaw1 = 'uint32_t';
+  statusRaw2 = 'uint32_t';
+  parse(status) {
+    return {
+      online: true,
+      canSendOK: !!(status.statusRaw1 & 1),
+      shoulderOK: !!(status.statusRaw1 & 2),
+      elbowOK: !!(status.statusRaw1 & 4),
+      wristOK: !!(status.statusRaw1 & 8),
+      clawOK: !!(status.statusRaw1 & 16),
+      clawRangeOK: !!(status.statusRaw1 & 32),
+      enginesEnabled: !!(status.statusRaw1 & 64),
+      cameraEnabled: !!(status.statusRaw1 & 128),
+    }
+  }
+};
+
+const armSchema = {
+  arm: new StatusSchema(),
+  platform: {
+    quaternion: new schema.QuaternionSchema(),
+    accelerometer: new schema.AccelerometerSchema(),
+    gyroscope: new schema.GyroscopeSchema(),
+    accuracy: new schema.AccuracySchema(),
+    barometer: new schema.BarometerSchema()
+  }, 
+  shoulder: {
+    quaternion: new schema.QuaternionSchema(),
+    accelerometer: new schema.AccelerometerSchema(),
+    gyroscope: new schema.GyroscopeSchema(),
+    accuracy: new schema.AccuracySchema()
+  },
+  elbow: {
+    quaternion: new schema.QuaternionSchema(),
+    accelerometer: new schema.AccelerometerSchema(),
+    gyroscope: new schema.GyroscopeSchema(),
+    accuracy: new schema.AccuracySchema()
+  },
+  wrist: {
+    quaternion: new schema.QuaternionSchema(),
+    accelerometer: new schema.AccelerometerSchema(),
+    gyroscope: new schema.GyroscopeSchema(),
+    accuracy: new schema.AccuracySchema()
+  },
+  claw: {
+    quaternion: new schema.QuaternionSchema(),
+    accelerometer: new schema.WitmotionAccelerometerSchema(),
+    gyroscope: new schema.WitmotionGyroscopeSchema(),
+    range: new schema.RangeSchema(),
+    barometer: new schema.BarometerSchema(),
+  },
+  error: null
+};
 
 class ArmChannel extends JSONFetchChannel {
   #armIP = '192.168.1.120';
   #onupdate = null;
-  #status = {
-    shoulder: {
-      i: NaN,
-      j: NaN,
-      k: NaN,
-      real: NaN,
-      quaternionAccuracy: NaN
-    },
-    elbow: {
-      i: NaN,
-      j: NaN,
-      k: NaN,
-      real: NaN,
-      quaternionAccuracy: NaN
-    },
-    wrist: {
-      i: NaN,
-      j: NaN,
-      k: NaN,
-      real: NaN,
-      quaternionAccuracy: NaN
-    },
-    claw: {
-      i: NaN,
-      j: NaN,
-      k: NaN,
-      real: NaN,
-      distance: NaN,
-      distanceType: NaN
-    },
-    platform: {
-      i: NaN,
-      j: NaN,
-      k: NaN,
-      real: NaN,
-      quaternionAccuracy: NaN
-    },
-    arm: {
-      online: false,
-      canSendOK: false,
-      shoulderOK: false,
-      elbowOK: false,
-      wristOK: false,
-      clawOK: false,
-      clawRangeOK: false,
-      engines: false,
-      camera: false
-    },
-    error: null
-  };
-
+  #reconnectTimer = null;
+  #reconnectDelay = 1000;
+ 
   get onupdate() {
     return this.#onupdate;
   }
@@ -61,87 +70,46 @@ class ArmChannel extends JSONFetchChannel {
   set onupdate(value) {
     this.#onupdate = value;
   }
-  
-  async #getStatus() {        
-    this.url = `http://${this.#armIP}/status`;
-    this.signal = AbortSignal.timeout(500);
-    const obj = await super.send({});
-    this.#status.shoulder.i = obj.shoulder.i;
-    this.#status.shoulder.j = obj.shoulder.j;
-    this.#status.shoulder.k = obj.shoulder.k;
-    this.#status.shoulder.real = obj.shoulder.real;
-    this.#status.shoulder.quaternionAccuracy = obj.shoulder.quaternionAccuracy;
 
-    this.#status.elbow.i = obj.elbow.i;
-    this.#status.elbow.j = obj.elbow.j;
-    this.#status.elbow.k = obj.elbow.k;
-    this.#status.elbow.real = obj.elbow.real;
-    this.#status.elbow.quaternionAccuracy = obj.elbow.quaternionAccuracy;
-
-    this.#status.wrist.i = obj.wrist.i;
-    this.#status.wrist.j = obj.wrist.j;
-    this.#status.wrist.k = obj.wrist.k;
-    this.#status.wrist.real = obj.wrist.real;
-    this.#status.wrist.quaternionAccuracy = obj.wrist.quaternionAccuracy;
-
-    this.#status.platform.i = obj.platform.i;
-    this.#status.platform.j = obj.platform.j;
-    this.#status.platform.k = obj.platform.k;
-    this.#status.platform.real = obj.platform.real;
-    this.#status.platform.quaternionAccuracy = obj.platform.quaternionAccuracy;
-
-    this.#status.arm.online = true;
-    this.#status.arm.canSendOK = obj.status.canSendOK;
-    this.#status.arm.shoulderOK = obj.status.shoulderOK;
-    this.#status.arm.elbowOK = obj.status.elbowOK;
-    this.#status.arm.wristOK = obj.status.wristOK;
-    this.#status.arm.clawOK = obj.status.clawOK;
-    this.#status.arm.clawRangeOK = obj.status.clawRangeOK;
-
-    this.#status.claw.i = obj.claw.i;
-    this.#status.claw.j = obj.claw.j;
-    this.#status.claw.k = obj.claw.k;
-    this.#status.claw.real = obj.claw.real;
-    this.#status.claw.distance = obj.claw.distance;
-    this.#status.claw.distanceType = obj.claw.distanceMeasureType;
-
-    this.#status.arm.enginesEnabled = obj.powerManagement.enginesEnabled;
-    this.#status.arm.cameraEnabled = obj.powerManagement.cameraEnabled;    
-  }
-
-  async set(data) {
-    this.url = `http://${this.#armIP}/set`;
-    this.signal = AbortSignal.timeout(500);
-    return await super.send(data);
-  }
-
-  constructor() {
-    super();
-    this.#loopStatus();
-  }
-
-  #loopStatus= async () => {
-    try {
-      await this.#getStatus();      
-    } catch (e) {
-      this.#status.arm.online = false;
-      this.#status.arm.canSendOK = false;
-      this.#status.arm.shoulderOK = false;
-      this.#status.arm.elbowOK = false;
-      this.#status.arm.wristOK = false;
-      this.#status.arm.clawOK = false;
-      this.#status.arm.clawRangeOK = false;
-      this.#status.arm.enginesEnabled = false;
-      this.#status.arm.cameraEnabled = false;
-      this.#status.error = e.message;    
+  #openSocket() {
+    const ws = new WebSocket(`ws://${this.#armIP}/ws`);
+    ws.binaryType = "arraybuffer";
+    ws.onopen = () => {
+      console.log('WebSocket connection established');
     }
-    await this.#onupdate?.(this.#status);
-    setTimeout(() => {
-      this.#loopStatus();
-    }, 100);
+
+    ws.onmessage = (event) => {
+      const res = schema.parse(event.data, armSchema);      
+      this.#onupdate?.(res);
+    }
+
+    ws.onclose = (e) => {
+      console.warn("WebSocket closed", e.code, e.reason);
+      this.#scheduleReconnect();
+    };
+
+    ws.onerror = (e) => {      
+      ws.close();
+    };
   }
+
+  #scheduleReconnect() {    
+    if (this.#reconnectTimer) return;
+
+    this.#reconnectTimer = setTimeout(() => {
+      this.#reconnectTimer = null;
+      this.#openSocket();
+      this.#reconnectDelay = Math.min(this.#reconnectDelay * 2, 10000);
+    }, this.#reconnectDelay);
+  }
+    constructor() {
+    super();
+    this.#openSocket();
+  }
+  
 }
 
 export const armChannel = new ArmChannel();
+
 
 export default armChannel;

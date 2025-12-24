@@ -42,11 +42,23 @@
             </i-flex-panel>
             <i-flex-panel direction="column">
               <i-title size="3">Euler</i-title>
-              <i-euler class="platform-euler" read-only="true" name="platform.euler"></i-euler>
+              <i-euler class="platform-euler" read-only="true" name="platform.difference"></i-euler>
             </i-flex-panel>
           </i-flex-panel>
+          <i-flex-panel class="quat">
+            <i-flex-panel direction="column">
+              <i-title size="3">Accelerometer</i-title>
+              <i-vector3d class="platform-accel" read-only="true" name="platform.accelerometer"></i-vector3d>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Gyroscope</i-title>
+              <i-vector3d class="platform-gyro" read-only="true" name="platform.gyroscope"></i-vector3d>
+            </i-flex-panel>            
+          </i-flex-panel>          
           <i-float-value class="platform-accuracy accuracy" read-only="true"
             name="platform.accuracy">Accuracy:</i-float-value>
+          <i-float-value class="platform-height" read-only="true" name="platform.height">Height:</i-float-value>
+          <i-float-value class="platform-temperature" read-only="true" name="platform.temperature">Temperature:</i-float-value>
         </i-flex-panel>
         <i-flex-panel class="buttons">
           <i-toggle-button name="platform.toggle-engines" action-click="toggleEngines">Engines</i-toggle-button>
@@ -64,19 +76,29 @@
           <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
-              <i-quaternion class="shoulder-quat" read-only="true" name="shoulder.quaternion"></i-quaternion>
-              <i-float-value class="shoulder-accuracy accuracy" read-only="true"
-                name="shoulder.accuracy">Accuracy:</i-float-value>
+              <i-quaternion class="shoulder-quat" read-only="true" name="shoulder.quaternion"></i-quaternion>                            
             </i-flex-panel>
             <i-flex-panel direction="column">
               <i-title size="3">Euler</i-title>
-              <i-euler class="shoulder-euler" read-only="true" name="shoulder.euler"></i-euler>
+              <i-euler class="shoulder-euler" read-only="true" name="shoulder.difference"></i-euler>
             </i-flex-panel>
           </i-flex-panel>
-          <i-flex-panel>
-            <i-title size="3">Difference</i-title>
-            <i-euler class="shoulder-difference" name="shoulder.difference" read-only="true"></i-euler>
-          </i-flex-panel>            
+          <i-flex-panel class="quat">
+            <i-flex-panel direction="column">
+              <i-title size="3">Accelerometer</i-title>
+              <i-vector3d class="shoulder-accel" read-only="true" name="shoulder.accelerometer"></i-vector3d>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Gyroscope</i-title>
+              <i-vector3d class="shoulder-gyro" read-only="true" name="shoulder.gyroscope"></i-vector3d>
+            </i-flex-panel>
+          </i-flex-panel>
+          <i-float-value class="shoulder-accuracy accuracy" read-only="true" name="shoulder.accuracy">Accuracy:</i-float-value>
+          <i-flex-panel direction="column">
+            <i-title size="3">Physical Angles</i-title>
+            <i-float-value class="shoulder-y" read-only="true" name="shoulder.y">y-angle:</i-float-value>
+            <i-float-value class="shoulder-z" read-only="true" name="shoulder.z">z-angle:</i-float-value>
+          </i-flex-panel>
         </i-flex-panel>
       </i-flex-panel>
       <i-flex-panel class="elbow panel" data-direction="column">
@@ -90,15 +112,24 @@
           <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
-              <i-quaternion class="elbow-quat" read-only="true" name="elbow.quaternion"></i-quaternion>
-              <i-float-value class="elbow-accuracy accuracy" read-only="true" 
-                name="elbow.accuracy">Accuracy:</i-float-value>
-            </i-flex-panel>
+              <i-quaternion class="elbow-quat" read-only="true" name="elbow.quaternion"></i-quaternion>          
+            </i-flex-panel>            
             <i-flex-panel direction="column">
               <i-title size="3">Euler</i-title>
               <i-euler class="elbow-euler" read-only="true" name="elbow.euler"></i-euler>
             </i-flex-panel>
           </i-flex-panel>
+          <i-flex-panel class="quat">
+            <i-flex-panel direction="column">
+              <i-title size="3">Accelerometer</i-title>
+              <i-vector3d class="shoulder-accel" read-only="true" name="elbow.accelerometer"></i-vector3d>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Gyroscope</i-title>
+              <i-vector3d class="shoulder-gyro" read-only="true" name="elbow.gyroscope"></i-vector3d>
+            </i-flex-panel>
+          </i-flex-panel>
+          <i-float-value class="elbow-accuracy accuracy" read-only="true" name="elbow.accuracy">Accuracy:</i-float-value>
         </i-flex-panel>
       </i-flex-panel>
       <i-flex-panel class="wrist panel" data-direction="column">
@@ -112,14 +143,24 @@
           <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
-              <i-quaternion class="wrist-quat" read-only="true" name="wrist.quaternion"></i-quaternion>
-              <i-float-value class="wrist-accuracy accuracy" read-only="true" name="wrist.accuracy">Accuracy:</i-float-value>
+              <i-quaternion class="wrist-quat" read-only="true" name="wrist.quaternion"></i-quaternion>              
             </i-flex-panel>
             <i-flex-panel direction="column">
               <i-title size="3">Euler</i-title>
               <i-euler class="wrist-euler" read-only="true" name="wrist.euler"></i-euler>
             </i-flex-panel>
           </i-flex-panel>
+          <i-flex-panel class="quat">
+            <i-flex-panel direction="column">
+              <i-title size="3">Accelerometer</i-title>
+              <i-vector3d class="shoulder-accel" read-only="true" name="wrist.accelerometer"></i-vector3d>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Gyroscope</i-title>
+              <i-vector3d class="shoulder-gyro" read-only="true" name="wrist.gyroscope"></i-vector3d>
+            </i-flex-panel>
+          </i-flex-panel>
+          <i-float-value class="wrist-accuracy accuracy" read-only="true" name="wrist.accuracy">Accuracy:</i-float-value>
         </i-flex-panel>
       </i-flex-panel>
       <i-flex-panel class="claw panel" data-direction="column">
@@ -133,8 +174,7 @@
           <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
-              <i-quaternion class="claw-quat" read-only="true" name="claw.quaternion"></i-quaternion>
-              <i-float-value class="claw-accuracy accuracy" read-only="true">Accuracy:</i-float-value>
+              <i-quaternion class="claw-quat" read-only="true" name="claw.quaternion"></i-quaternion>              
             </i-flex-panel>
             <i-flex-panel direction="column">
               <i-title size="3">Euler</i-title>
@@ -142,8 +182,17 @@
             </i-flex-panel>
           </i-flex-panel>
           <i-float-value class="claw-distance distance" read-only="true" name="claw.distance">Distance:</i-float-value>
-          <i-float-value class="claw-distance-type distance" read-only="true" name="claw.distance-type">Measure
-            Type:</i-float-value>
+          <i-float-value class="claw-distance-type distance" read-only="true" name="claw.distance-type">Measure Type:</i-float-value>
+          <i-flex-panel class="quat">
+            <i-flex-panel direction="column">
+              <i-title size="3">Accelerometer</i-title>
+              <i-vector3d class="shoulder-accel" read-only="true" name="claw.accelerometer"></i-vector3d>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Gyroscope</i-title>
+              <i-vector3d class="shoulder-gyro" read-only="true" name="claw.gyroscope"></i-vector3d>
+            </i-flex-panel>
+          </i-flex-panel>
         </i-flex-panel>
       </i-flex-panel>
       <i-flex-panel class="message">

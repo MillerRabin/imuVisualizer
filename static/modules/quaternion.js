@@ -52,8 +52,16 @@ function isZero(a) {
   return ((a.i == 0) && (a.j == 0) && (a.k == 0) && (a.real == 0));
 }
 
+function isOne(a) {
+  return ((a.i == 0) && (a.j == 0) && (a.k == 0) && (a.real == 1));
+}
+
+function isValid(a) {
+  return (!isNaN(a.i) && !isNaN(a.j) && !isNaN(a.k) && !isNaN(a.real));
+}
+
 function handleZero(a) {
-  if (isZero) a.real = 1;
+  if (isZero(a)) a.real = 1;
   return a;
 }
 
@@ -115,5 +123,8 @@ export default {
   transform,
   fromEuler,
   multiply,
-  angleDifference
+  angleDifference,
+  isValid,
+  isOne,
+  normalize
 }
