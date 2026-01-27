@@ -105,12 +105,12 @@ class BarometerSchema extends Schema {
 };
 
 class RangeSchema extends Schema {
-  range = 'uint16_t';
-  measureType = 'uint8_t';
-  unused1 = 'uint8_t';
-  unused2 = 'uint32_t';
+  longRange = 'uint16_t';
+  shortRange = 'uint16_t';
+  unused1 = 'uint16_t';
+  unused2 = 'uint16_t';
   parse(result) {
-    return { range: result.range, measureType: result.measureType };
+    return { longRange: result.longRange, shortRange: result.shortRange };
   }
 };
 

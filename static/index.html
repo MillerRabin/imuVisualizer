@@ -35,13 +35,17 @@
         <i-flex-panel class="container" data-direction="column">
           <i-title size="3">Rotate</i-title>
           <i-euler class="rotate" name="platform.rotate"></i-euler>
-          <i-flex-panel class="quat">
+          <i-flex-panel class="three">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
               <i-quaternion class="platform-quat" read-only="true" name="platform.quaternion"></i-quaternion>
             </i-flex-panel>
             <i-flex-panel direction="column">
-              <i-title size="3">Euler</i-title>
+              <i-title size="3">Origin</i-title>
+              <i-euler class="platform-euler" read-only="true" name="platform.origin"></i-euler>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Difference</i-title>
               <i-euler class="platform-euler" read-only="true" name="platform.difference"></i-euler>
             </i-flex-panel>
           </i-flex-panel>
@@ -63,7 +67,9 @@
         <i-flex-panel class="buttons">
           <i-toggle-button name="platform.toggle-engines" action-click="toggleEngines">Engines</i-toggle-button>
           <i-toggle-button name="platform.toggle-camera" action-click="toggleCamera">Camera</i-toggle-button>
-        </i-flex-panel>
+          <button name="platform.save-offsets" action-click="saveOffsets">Save Offsets</button>
+          <button name="platform.print" action-click="print">Print</button>
+        </i-flex-panel>        
       </i-flex-panel>
       <i-flex-panel class="shoulder panel" data-direction="column">
         <i-title size="2">Shoulder</i-title>
@@ -73,15 +79,19 @@
         <i-flex-panel class="container" data-direction="column">
           <i-title size="3">Rotate</i-title>
           <i-euler class="rotate" name="shoulder.rotate" step="0.1"></i-euler>
-          <i-flex-panel class="quat">
+          <i-flex-panel class="three">
             <i-flex-panel direction="column">
               <i-title size="3">Quaternion</i-title>
               <i-quaternion class="shoulder-quat" read-only="true" name="shoulder.quaternion"></i-quaternion>                            
             </i-flex-panel>
             <i-flex-panel direction="column">
-              <i-title size="3">Euler</i-title>
-              <i-euler class="shoulder-euler" read-only="true" name="shoulder.difference"></i-euler>
+              <i-title size="3">Origin</i-title>
+              <i-euler class="platform-euler" read-only="true" name="shoulder.origin"></i-euler>
             </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-title size="3">Difference</i-title>
+              <i-euler class="shoulder-euler" read-only="true" name="shoulder.difference"></i-euler>
+            </i-flex-panel>            
           </i-flex-panel>
           <i-flex-panel class="quat">
             <i-flex-panel direction="column">
@@ -96,6 +106,7 @@
           <i-float-value class="shoulder-accuracy accuracy" read-only="true" name="shoulder.accuracy">Accuracy:</i-float-value>
           <i-flex-panel direction="column">
             <i-title size="3">Physical Angles</i-title>
+            <i-float-value class="shoulder-x" read-only="true" name="shoulder.x">x-angle:</i-float-value>
             <i-float-value class="shoulder-y" read-only="true" name="shoulder.y">y-angle:</i-float-value>
             <i-float-value class="shoulder-z" read-only="true" name="shoulder.z">z-angle:</i-float-value>
           </i-flex-panel>
@@ -181,8 +192,8 @@
               <i-euler class="claw-euler" read-only="true" name="claw.euler"></i-euler>
             </i-flex-panel>
           </i-flex-panel>
-          <i-float-value class="claw-distance distance" read-only="true" name="claw.distance">Distance:</i-float-value>
-          <i-float-value class="claw-distance-type distance" read-only="true" name="claw.distance-type">Measure Type:</i-float-value>
+          <i-float-value class="claw-distance distance" read-only="true" name="claw.short">Short Range:</i-float-value>
+          <i-float-value class="claw-distance-type distance" read-only="true" name="claw.long">Long Range:</i-float-value>
           <i-flex-panel class="quat">
             <i-flex-panel direction="column">
               <i-title size="3">Accelerometer</i-title>

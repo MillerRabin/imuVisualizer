@@ -17,14 +17,14 @@ import quaternion from './modules/quaternion.js';
 arm.onupdate = armCallback;
 
 let gComponents = null;
-let gPlatform = null;
-let gShoulder = null;
+let gPlatform = { x: 0, y: 0, z: 0, w: 1 };
+let gShoulder = { x: 0, y: 0, z: 0, w: 1 };
 let gElbow = null;
 let gWrist = null;
 let gClaw = null;
 
 function createCube(materials, position) {
-  const geometry = new THREE.BoxGeometry(1, 1, 1);  
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
   const cube = new THREE.Mesh(geometry, materials);
   cube.position.x = position.x;
   cube.position.y = position.y;
@@ -34,9 +34,9 @@ function createCube(materials, position) {
 
 function ready() {
   function animate() {
-    requestAnimationFrame( animate );  
+    requestAnimationFrame(animate);
     if (gPlatform != null)
-      platform.setRotationFromQuaternion(gPlatform);            
+      platform.setRotationFromQuaternion(gPlatform);
     if (gShoulder != null)
       shoulder.setRotationFromQuaternion(gShoulder);
     if (gElbow != null)
@@ -45,25 +45,24 @@ function ready() {
       wrist.setRotationFromQuaternion(gWrist);
     if (gClaw != null)
       claw.setRotationFromQuaternion(gClaw);
-    renderer.render( scene, camera );
+    renderer.render(scene, camera);
   }
-    
+
   const application = window.document.querySelector('.application');
   gComponents = application.components;
-  const ratio = gComponents.renderer.clientWidth / gComponents.renderer.clientHeight;    
+
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, ratio, 0.1, 1000);  
-  const renderer = new THREE.WebGLRenderer();      
+  const renderer = new THREE.WebGLRenderer();
   const loader = new THREE.TextureLoader();
-  
+
   const image1 = loader.load('/images/1.png');
   const image2 = loader.load('/images/2.png');
   const image3 = loader.load('/images/3.png');
   const image4 = loader.load('/images/4.png');
   const image5 = loader.load('/images/5.png');
   const image6 = loader.load('/images/6.png');
-  
+
   const materials = [
     new THREE.MeshBasicMaterial({ map: image1 }),
     new THREE.MeshBasicMaterial({ map: image2 }),
@@ -74,82 +73,43 @@ function ready() {
   ];
 
   renderer.setSize(gComponents.renderer.clientWidth, gComponents.renderer.clientHeight);
+  const aspect = gComponents.renderer.clientWidth / gComponents.renderer.clientHeight;
+
+  const zoom = 3;
+  const camera = new THREE.OrthographicCamera(
+    -zoom * aspect, zoom * aspect,
+    zoom, -zoom,
+    0.1, 100
+  );
 
   gComponents.renderer.appendChild(renderer.domElement);
-  //gComponents.grid.setRow(1, 'height', 'auto');
-  
-  const platform = createCube(materials, { x: 0, y: 0, z: 0 });
-  const shoulder = createCube(materials, { x: 2, y: 0, z: 0 });  
-  const elbow = createCube(materials, { x: 4, y: 0, z: 0 });
-  const wrist = createCube(materials, { x: 6, y: 0, z: 0 });  
-  const claw = createCube(materials, { x: 8, y: 0, z: 0 });
-    
+
+  const platform = createCube(materials, { x: 0, y: 0, z: 8 });
+  const shoulder = createCube(materials, { x: 0, y: 0, z: 6 });
+  const elbow = createCube(materials, { x: 0, y: 0, z: 4 });
+  const wrist = createCube(materials, { x: 0, y: 0, z: 2 });
+  const claw = createCube(materials, { x: 0, y: 0, z: 0 });
+
   scene.add(platform);
   scene.add(shoulder);
   scene.add(elbow);
   scene.add(wrist);
   scene.add(claw);
 
-  camera.rotation.x = THREE.MathUtils.degToRad(-90);
-  camera.position.x = 5;
-  camera.position.y = 5;
-  camera.position.z = 0;
+  camera.position.set(10, 0, 4);
+  camera.lookAt(0, 0, 4);
+
   animate();
 }
 
-const gOffsets = { 
+const gOffsets = {
   platform: {
-    offset: { i: 0, j: 0, k: 0, real: 1 },
+    offset: { i: 0, j: 0, k: 0, real: 1 },    
   },
   shoulder: {
-    offset: { i: 0, j: 0, k: 0, real: 1 },    
-    yZero: 0,
-    yStep: -1,    
-    zZero: 135,
-    zStep: 1
+    offset: { i: 0, j: 0, k: 0, real: 1 }   
   }
 };
-
-function norm(v) {
-  return Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-}
-
-function rotateVectorByQuat(q, v) {
-  const qv = { real: 0, i: v.x, j: v.y, k: v.z };
-  const tmp = quaternion.multiply(q, qv);
-  const qr = quaternion.multiply(tmp, quaternion.invert(q));
-  return { x: qr.i, y: qr.j, z: qr.k };
-}
-
-function extractTwistAngleAroundAxis(q, axis) {
-  // vector part
-  const v = { x: q.i, y: q.j, z: q.k };
-  // проекция вектора v на axis
-  const dot = v.x * axis.x + v.y * axis.y + v.z * axis.z;
-  const proj = { x: axis.x * dot, y: axis.y * dot, z: axis.z * dot };
-
-  // Если проекция почти нулевая и w ~ 1 -> угол ~ 0
-  const projNorm = norm(proj);
-  if (projNorm < 1e-12) return 0.0;
-
-  // собрать q_tw = (w, proj)
-  let w = q.real;
-  let qtw = { w: w, x: proj.x, y: proj.y, z: proj.z };
-
-  // нормализация
-  const mag = Math.sqrt(qtw.w * qtw.w + projNorm * projNorm);
-  qtw.w /= mag;
-  qtw.x = qtw.x / mag;
-  qtw.y = qtw.y / mag;
-  qtw.z = qtw.z / mag;
-
-  // угол: 2 * atan2(||proj||, w) — более устойчиво чем acos
-  const angle = 2.0 * Math.atan2(projNorm / mag, qtw.w); // projNorm/mag == sin(theta/2)
-
-  // задаём знак по скалярному произведению (v·axis)
-  const sign = (dot >= 0) ? 1.0 : -1.0;
-  return sign * angle; // радианы
-}
 
 function loadOffsets() {
   if (window.localStorage['offsets'] != null) {
@@ -160,80 +120,146 @@ function loadOffsets() {
 
 function saveOffsets(status) {
   calcOffsets(status);
-  window.localStorage['offsets'] = JSON.stringify(gOffsets);  
+  window.localStorage['offsets'] = JSON.stringify(gOffsets);
 }
 
 function calcOffsets(status) {
-  gOffsets.platform.offset = { i: status.platform.i, j: status.platform.j, k: status.platform.k, real: status.platform.real };
-  gOffsets.shoulder.offset = quaternion.multiply(gOffsets.platform.offset, quaternion.invert(status.shoulder));
+  gOffsets.platform.offset = { i: status.platform.quaternion.i, j: status.platform.quaternion.j, k: status.platform.quaternion.k, real: status.platform.quaternion.real };  
+  gOffsets.shoulder.offset = quaternion.multiply(quaternion.invert(gOffsets.platform.offset), status.shoulder.quaternion);  
 }
 
+function swingTwistDecomposition(q, axis) {
+  const v = { x: q.i, y: q.j, z: q.k };  
+  const dot =
+    v.x * axis.x +
+    v.y * axis.y +
+    v.z * axis.z;
 
-function normalize(v) {
-  const n = norm(v);
-  if (n < 1e-12) return { x: 0, y: 0, z: 0 };
-  return { x: v.x / n, y: v.y / n, z: v.z / n };
-}
-
-function getServoAngle(twistAngle) {
-  let deg = twistAngle * (180 / Math.PI);
-  if (deg > 270 ) deg = deg - 360;
+  const twist = {
+    real: q.real,
+    i: axis.x * dot,
+    j: axis.y * dot,
+    k: axis.z * dot
+  };
   
-  return -1 * deg;
+  const len = Math.hypot(twist.real, twist.i, twist.j, twist.k);
+  twist.real /= len;
+  twist.i /= len;
+  twist.j /= len;
+  twist.k /= len;
+
+  const swing = quaternion.multiply(q, quaternion.invert(twist));
+  return { swing, twist };
+}
+
+function twistAngle(qTwist) {  
+  const angle = 2 * Math.acos(Math.max(-1, Math.min(1, qTwist.real)));
+  const sign = (qTwist.i + qTwist.j + qTwist.k) >= 0 ? 1 : -1;
+  return angle * sign;
+}
+
+function normalizeAngleDeg(a) {
+  a = (a + 180) % 360;
+  if (a < 0) a += 360;
+  return a - 180;
+}
+
+let needSaveState = false;
+let printState = false;
+
+function getDifference(platformQ, shoulderQ, shoulderOffset) {
+  const AXIS_X_LOCAL = { x: 1, y: 0, z: 0 };
+  const AXIS_Y_LOCAL = { x: 0, y: 1, z: 0 };
+  const AXIS_Z_LOCAL = { x: 0, y: 0, z: 1 };
+
+  const qShoulderRelNow = quaternion.multiply(quaternion.invert(platformQ), shoulderQ);
+  const sDiff = quaternion.multiply(quaternion.invert(shoulderOffset), qShoulderRelNow);
+
+  const { twist: yawQ } = swingTwistDecomposition(sDiff, AXIS_X_LOCAL);
+  const yaw = twistAngle(yawQ);
+  const { twist: pitchQ } = swingTwistDecomposition(sDiff, AXIS_Y_LOCAL);
+  const pitch = twistAngle(pitchQ);
+  const { twist: rollQ } = swingTwistDecomposition(sDiff, AXIS_Z_LOCAL);
+  const roll = twistAngle(rollQ);
+  return { roll, pitch, yaw };
+}
+
+function tiltAngle(acc) {
+  const { x, y, z } = acc;
+
+  //const g = 9.80665;
+  const g = 9.5;
+  //const g = Math.sqrt(x * x + y * y + z * z);
+  //const xnorm = x / Math.sqrt(x * x + y * y + z * z);
+  
+
+  if (g === 0) return 0;
+
+  const sign = y >= -1 ? 1 : -1;
+
+  const angleRad = Math.acos(x / g);
+  if (isNaN(angleRad)) return 0;
+  return sign * angleRad * 180 / Math.PI;
 }
 
 async function armCallback(status) {
   if (gComponents == null) return;
-  
+
   gComponents.error.message = '';
-    
-  if (quaternion.isOne(gOffsets.platform.offset) && (quaternion.isValid(status.platform.quaternion))) {
-    //saveOffsets(status);
-    loadOffsets();
+  
+  if (needSaveState) {
+    saveOffsets(status);
+    needSaveState = false;
   }
 
-  const so = quaternion.multiply(gOffsets.shoulder.offset, status.shoulder.quaternion);
-  
-  const pDiff = quaternion.multiply(quaternion.invert(gOffsets.platform.offset), status.platform.quaternion);
-  const sDiff = quaternion.multiply(quaternion.invert(gOffsets.platform.offset), so);
+  if (printState) {    
+    console.log('Platform Quaternion:', status.platform.quaternion);
+    console.log('Shoulder Quaternion:', status.shoulder.quaternion);
+    printState = false;
+  }
 
-  const pdEuler = euler.get(pDiff.i, pDiff.j, pDiff.k, pDiff.real);
-  const sdEuler = euler.get(sDiff.i, sDiff.j, sDiff.k, sDiff.real);
+  if (quaternion.isOne(gOffsets.platform.offset) && (quaternion.isValid(status.platform.quaternion))) {
+    loadOffsets(status);
+  }
+
+  const pDiff = status.platform.quaternion;
+
+  const poEuler = euler.get(status.platform.quaternion.i, status.platform.quaternion.j, status.platform.quaternion.k, status.platform.quaternion.real);
+  const soEuler = euler.get(status.shoulder.quaternion.i, status.shoulder.quaternion.j, status.shoulder.quaternion.k, status.shoulder.quaternion.real);
   
+  const pdEuler = euler.get(pDiff.i, pDiff.j, pDiff.k, pDiff.real);
+
+  gComponents.platform.origin.roll = (poEuler.x * (180 / Math.PI)).toFixed(3);
+  gComponents.platform.origin.pitch = (poEuler.y * (180 / Math.PI)).toFixed(3);
+  gComponents.platform.origin.yaw = (poEuler.z * (180 / Math.PI)).toFixed(3);
+
   gComponents.platform.difference.roll = (pdEuler.x * (180 / Math.PI)).toFixed(3);
   gComponents.platform.difference.pitch = (pdEuler.y * (180 / Math.PI)).toFixed(3);
   gComponents.platform.difference.yaw = (pdEuler.z * (180 / Math.PI)).toFixed(3);
-    
-  gComponents.shoulder.difference.roll = sdEuler.x * (180 / Math.PI);
-  gComponents.shoulder.difference.pitch = sdEuler.y * (180 / Math.PI);
-  gComponents.shoulder.difference.yaw = sdEuler.z * (180 / Math.PI);
-  
-    
-  const localY = { x: 0, y: 0, z: 1 };  
-  const axisY_in_platform = rotateVectorByQuat(gOffsets.platform.offset, localY);
-  const axisUnit = normalize(axisY_in_platform);
-  
-  const ra = extractTwistAngleAroundAxis(sDiff, axisUnit);
-  gComponents.shoulder.y.value = getServoAngle(ra);
 
-  /*const sr = quaternion.fromEuler(
-    gComponents.shoulder.rotate.roll * (Math.PI / 180),
-    gComponents.shoulder.rotate.pitch * (Math.PI / 180),
-    gComponents.shoulder.rotate.yaw * (Math.PI / 180)
-  );
-  so = quaternion.multiply(sr, so);*/
+  gComponents.shoulder.origin.roll = soEuler.x * (180 / Math.PI);
+  gComponents.shoulder.origin.pitch = soEuler.y * (180 / Math.PI);
+  gComponents.shoulder.origin.yaw = soEuler.z * (180 / Math.PI);
   
-  gComponents.shoulder.z.value = (sdEuler.x + pdEuler.z) * (180 / Math.PI) + 135 ;
-    
+  
+  const diff = getDifference(status.platform.quaternion, status.shoulder.quaternion, gOffsets.shoulder.offset);
+
+  gComponents.shoulder.x.value = normalizeAngleDeg(diff.roll * 180 / Math.PI);
+  gComponents.shoulder.y.value = tiltAngle(status.shoulder.accelerometer);
+  gComponents.shoulder.z.value = normalizeAngleDeg(diff.yaw * 180 / Math.PI);
+
+  //const poQuat = new THREE.Quaternion(pDiff.i, pDiff.j, pDiff.k, pDiff.real);
   const poQuat = new THREE.Quaternion(status.platform.quaternion.i, status.platform.quaternion.j, status.platform.quaternion.k, status.platform.quaternion.real);
-  const eoQuat = new THREE.Quaternion(status.elbow.quaternion.i, status.elbow.quaternion.j, status.elbow.quaternion.k, status.elbow.quaternion.real); 
+  const soQuat = new THREE.Quaternion(status.shoulder.quaternion.i, status.shoulder.quaternion.j, status.shoulder.quaternion.k, status.shoulder.quaternion.real);  
+  const eoQuat = new THREE.Quaternion(status.elbow.quaternion.i, status.elbow.quaternion.j, status.elbow.quaternion.k, status.elbow.quaternion.real);
   const woQuat = new THREE.Quaternion(status.wrist.quaternion.i, status.wrist.quaternion.j, status.wrist.quaternion.k, status.wrist.quaternion.real);
   const coQuat = new THREE.Quaternion(status.claw.quaternion.i, status.claw.quaternion.j, status.claw.quaternion.k, status.claw.quaternion.real);
-                
+
   gComponents.platform.quaternion.i = poQuat.x;
   gComponents.platform.quaternion.j = poQuat.y;
   gComponents.platform.quaternion.k = poQuat.z;
   gComponents.platform.quaternion.real = poQuat.w;
+
   gComponents.platform.accuracy.value = status.platform.accuracy.quaternionAccuracy;
   gComponents.platform.accelerometer.x = status.platform.accelerometer?.x ?? NaN;
   gComponents.platform.accelerometer.y = status.platform.accelerometer?.y ?? NaN;
@@ -244,16 +270,15 @@ async function armCallback(status) {
   gComponents.platform.gyroscope.z = status.platform.gyroscope?.z ?? NaN;
   gComponents.platform.height.value = status.platform.barometer.height;
   gComponents.platform.temperature.value = status.platform.barometer.temperature;
-  
+
   gComponents.platform.online.value = status.arm.online;
   gComponents.platform.canSending.value = status.arm.canSendOK;
   gComponents.platform.engines.value = status.arm.enginesEnabled;
   gComponents.platform.camera.value = status.arm.cameraEnabled;
-    
+
   gComponents.platform.toggleEngines.value = status.arm.enginesEnabled;
   gComponents.platform.toggleCamera.value = status.arm.cameraEnabled;
-  
-  const soQuat = new THREE.Quaternion(so.i, so.j, so.k, so.real);  
+
   gComponents.shoulder.quaternion.i = soQuat.x;
   gComponents.shoulder.quaternion.j = soQuat.y;
   gComponents.shoulder.quaternion.k = soQuat.z;
@@ -269,7 +294,7 @@ async function armCallback(status) {
   gComponents.shoulder.gyroscope.x = status.shoulder.gyroscope?.x ?? NaN;
   gComponents.shoulder.gyroscope.y = status.shoulder.gyroscope?.y ?? NaN;
   gComponents.shoulder.gyroscope.z = status.shoulder.gyroscope?.z ?? NaN;
-      
+
   gComponents.elbow.quaternion.i = eoQuat.x;
   gComponents.elbow.quaternion.j = eoQuat.y;
   gComponents.elbow.quaternion.k = eoQuat.z;
@@ -285,7 +310,7 @@ async function armCallback(status) {
   gComponents.elbow.gyroscope.y = status.elbow.gyroscope?.y ?? NaN;
   gComponents.elbow.gyroscope.z = status.elbow.gyroscope?.z ?? NaN;
 
-  const eEuler = new THREE.Euler().setFromQuaternion(woQuat);
+  const eEuler = new THREE.Euler().setFromQuaternion(eoQuat);
   gComponents.elbow.euler.roll = eEuler.x * (180 / Math.PI);
   gComponents.elbow.euler.pitch = eEuler.y * (180 / Math.PI);
   gComponents.elbow.euler.yaw = eEuler.z * (180 / Math.PI);
@@ -296,8 +321,8 @@ async function armCallback(status) {
   gComponents.wrist.quaternion.real = woQuat.w;
   gComponents.wrist.accuracy.value = status.wrist.accuracy.quaternionAccuracy;
   gComponents.wrist.online.value = status.arm.wristOK;
-  
-  const wEuler = new THREE.Euler().setFromQuaternion(eoQuat);
+
+  const wEuler = new THREE.Euler().setFromQuaternion(woQuat);
   gComponents.wrist.euler.roll = wEuler.x * (180 / Math.PI);
   gComponents.wrist.euler.pitch = wEuler.y * (180 / Math.PI);
   gComponents.wrist.euler.yaw = wEuler.z * (180 / Math.PI);
@@ -313,7 +338,7 @@ async function armCallback(status) {
   gComponents.claw.quaternion.i = coQuat.x;
   gComponents.claw.quaternion.j = coQuat.y;
   gComponents.claw.quaternion.k = coQuat.z;
-  gComponents.claw.quaternion.real = coQuat.w;  
+  gComponents.claw.quaternion.real = coQuat.w;
   gComponents.claw.online.value = status.arm.clawOK;
 
   const cEuler = new THREE.Euler().setFromQuaternion(coQuat);
@@ -321,8 +346,8 @@ async function armCallback(status) {
   gComponents.claw.euler.pitch = cEuler.y * (180 / Math.PI);
   gComponents.claw.euler.yaw = cEuler.z * (180 / Math.PI);
 
-  gComponents.claw.distance.value = status.claw.range.range;
-  gComponents.claw.distanceType.value = status.claw.range.measureType;
+  gComponents.claw.long.value = status.claw.range.longRange;
+  gComponents.claw.short.value = status.claw.range.shortRange;
 
   gComponents.claw.accelerometer.x = status.claw.accelerometer.x;
   gComponents.claw.accelerometer.y = status.claw.accelerometer.y;
@@ -332,22 +357,20 @@ async function armCallback(status) {
   gComponents.claw.gyroscope.y = status.claw.gyroscope?.y ?? NaN;
   gComponents.claw.gyroscope.z = status.claw.gyroscope?.z ?? NaN;
 
-
-    
-  gPlatform = poQuat;
-  gShoulder = soQuat;
-  gElbow = eoQuat;
-  gWrist = woQuat;
-  gClaw = coQuat;
+  gPlatform = poQuat.clone();  
+  gShoulder = soQuat.clone();  
+  gElbow = eoQuat.clone();
+  gWrist = woQuat.clone();
+  gClaw = coQuat.clone();
 }
 
-export class IMUApplication extends Application { 
+export class IMUApplication extends Application {
   componentReady() {
     ready();
   }
 
-  toggleEngines(element) {    
-    arm.set({ 
+  toggleEngines(element) {
+    arm.set({
       enginesEnabled: element.value
     });
   }
@@ -356,7 +379,14 @@ export class IMUApplication extends Application {
     arm.set({
       cameraEnabled: element.value
     });
+  }
 
+  saveOffsets() {
+    needSaveState = true;
+  }
+
+  print() {
+    printState = true;
   }
 }
 

@@ -1,5 +1,4 @@
 import { JSONFetchChannel } from "https://components.int-t.com/current/core/jsonFetchChannel/jsonFetchChannel.js";
-import quaternion from "./quaternion.js"; 
 import schema from "./schema.js";
 
 class StatusSchema extends schema.Schema {
@@ -102,7 +101,14 @@ class ArmChannel extends JSONFetchChannel {
       this.#reconnectDelay = Math.min(this.#reconnectDelay * 2, 10000);
     }, this.#reconnectDelay);
   }
-    constructor() {
+
+  async set(data) {
+    this.url = `http://${this.#armIP}/set`;
+    this.signal = AbortSignal.timeout(500);
+    return await super.send(data);
+  }
+  
+  constructor() {
     super();
     this.#openSocket();
   }

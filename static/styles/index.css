@@ -49,6 +49,10 @@ i-application i-grid-panel > i-flex-panel {
   width: 50%;
 }
 
+.three > i-flex-panel {
+  width: 33%;
+}
+
 i-led .title {
   white-space: nowrap;
 }
@@ -132,4 +136,16 @@ imu-application .buttons > * {
     i-toggle-button input:checked+button {
       color: white;
       background: linear-gradient(135deg, #4caf50, #388e3c);
+    }
+
+    button {
+      width: 100%;
+      display: block;      
+      font-size: 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      color: #333;
+      background: linear-gradient(145deg, #f0f0f0, #dcdcdc);
+      cursor: pointer;
+      transition: all 0.25s ease;
     }
