@@ -20,38 +20,69 @@ class StatusSchema extends schema.Schema {
 };
 
 const armSchema = {
+  tag: 'uint8_t',
   arm: new StatusSchema(),
   platform: {
+    tag: 'uint8_t',
     quaternion: new schema.QuaternionSchema(),
     accelerometer: new schema.AccelerometerSchema(),
-    gyroscope: new schema.GyroscopeSchema(),
-    accuracy: new schema.AccuracySchema(),
-    barometer: new schema.BarometerSchema()
+    gyroscope: new schema.GyroscopeSchema(),    
+    barometer: new schema.BarometerSchema(),
+    detectorsLinePower: new schema.PowerSchema(),
+    cpuLinePower: new schema.PowerSchema(),
+    enginesLinePower: new schema.PowerSchema(),
+    unused1: 'uint16_t',
+    unused2: 'uint16_t',
   }, 
   shoulder: {
+    tag: 'uint8_t',
     quaternion: new schema.QuaternionSchema(),
     accelerometer: new schema.AccelerometerSchema(),
     gyroscope: new schema.GyroscopeSchema(),
     accuracy: new schema.AccuracySchema()
   },
   elbow: {
+    tag: 'uint8_t',
     quaternion: new schema.QuaternionSchema(),
     accelerometer: new schema.AccelerometerSchema(),
     gyroscope: new schema.GyroscopeSchema(),
     accuracy: new schema.AccuracySchema()
   },
   wrist: {
+    tag: 'uint8_t',
     quaternion: new schema.QuaternionSchema(),
     accelerometer: new schema.AccelerometerSchema(),
     gyroscope: new schema.GyroscopeSchema(),
     accuracy: new schema.AccuracySchema()
   },
   claw: {
+    tag: 'uint8_t',
     quaternion: new schema.QuaternionSchema(),
     accelerometer: new schema.WitmotionAccelerometerSchema(),
     gyroscope: new schema.WitmotionGyroscopeSchema(),
     range: new schema.RangeSchema(),
     barometer: new schema.BarometerSchema(),
+  },
+  parse: (result) => {
+    if (result.tag !== 0x01) {
+      throw new Error(`Invalid Socket Response tag: ${result.tag} must be 0x01`);
+    }
+    if (result.platform.tag !== 0x02) {
+      throw new Error(`Invalid Platform tag: ${result.platform.tag} must be 0x02`);
+    }
+    if (result.shoulder.tag !== 0x03) {
+      throw new Error(`Invalid Shoulder tag: ${result.shoulder.tag} must be 0x03`);
+    }
+    if (result.elbow.tag !== 0x04) {
+      throw new Error(`Invalid Elbow tag: ${result.elbow.tag} must be 0x04`);
+    }
+    if (result.wrist.tag !== 0x05) {
+      throw new Error(`Invalid Wrist tag: ${result.wrist.tag} must be 0x05`);
+    }
+    if (result.claw.tag !== 0x06) {
+      throw new Error(`Invalid Claw tag: ${result.claw.tag} must be 0x06`);
+    }
+    return result;
   },
   error: null
 };

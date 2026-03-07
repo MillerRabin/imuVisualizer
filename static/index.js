@@ -23,6 +23,7 @@ let gElbow = null;
 let gWrist = null;
 let gClaw = null;
 
+
 function createCube(materials, position) {
   const geometry = new THREE.BoxGeometry(1, 1, 1);
   const cube = new THREE.Mesh(geometry, materials);
@@ -260,7 +261,7 @@ async function armCallback(status) {
   gComponents.platform.quaternion.k = poQuat.z;
   gComponents.platform.quaternion.real = poQuat.w;
 
-  gComponents.platform.accuracy.value = status.platform.accuracy.quaternionAccuracy;
+  //gComponents.platform.accuracy.value = status.platform.accuracy.quaternionAccuracy;
   gComponents.platform.accelerometer.x = status.platform.accelerometer?.x ?? NaN;
   gComponents.platform.accelerometer.y = status.platform.accelerometer?.y ?? NaN;
   gComponents.platform.accelerometer.z = status.platform.accelerometer?.z ?? NaN;
@@ -270,6 +271,13 @@ async function armCallback(status) {
   gComponents.platform.gyroscope.z = status.platform.gyroscope?.z ?? NaN;
   gComponents.platform.height.value = status.platform.barometer.height;
   gComponents.platform.temperature.value = status.platform.barometer.temperature;
+
+  gComponents.platform.detectors.voltage.value = status.platform.detectorsLinePower.voltage;
+  gComponents.platform.detectors.current.value = status.platform.detectorsLinePower.current;
+  gComponents.platform.cpu.voltage.value = status.platform.cpuLinePower.voltage;
+  gComponents.platform.cpu.current.value = status.platform.cpuLinePower.current;
+  gComponents.platform.enginesline.voltage.value = status.platform.enginesLinePower.voltage;
+  gComponents.platform.enginesline.current.value = status.platform.enginesLinePower.current;
 
   gComponents.platform.online.value = status.arm.online;
   gComponents.platform.canSending.value = status.arm.canSendOK;

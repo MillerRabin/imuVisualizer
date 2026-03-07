@@ -10,7 +10,7 @@ const types = {
   'uint16_t': (v, o) => [v.getUint16(o, true), o + 2],
   'int16_t': (v, o) => [v.getInt16(o, true), o + 2],
   'uint32_t': (v, o) => [v.getUint32(o, true), o + 4],
-  'int32_t': (v, o) => [v.getInt32(o, true), o + 4]
+  'int32_t': (v, o) => [v.getInt32(o, true), o + 4],
 };
 
 class Schema {};
@@ -97,10 +97,10 @@ class AccuracySchema extends Schema {
 
 class BarometerSchema extends Schema {  
   heightRaw = 'int32_t';
-  temperatureRaw = 'int16_t';
-  unused = 'int16_t'
-  parse(result) {    
-    return { height: result.heightRaw / 100, temperature: result.temperatureRaw / 100 };
+  temperatureRaw = 'uint16_t';
+  unused = 'uint16_t'
+  parse(result) {
+    return { height: result.heightRaw, temperature: result.temperatureRaw / 100.0 };
   }
 };
 
@@ -113,6 +113,14 @@ class RangeSchema extends Schema {
     return { longRange: result.longRange, shortRange: result.shortRange };
   }
 };
+
+class PowerSchema extends Schema {
+  current = 'uint16_t'
+  voltage = 'uint16_t'  
+  parse(result) {
+    return { voltage: result.voltage / 1000.0, current: result.current / 1000.0 };
+  }
+}
 
 
 function parse(buffer, schema) {  
@@ -164,6 +172,7 @@ export default {
   GyroscopeSchema,
   AccuracySchema,
   BarometerSchema,
-  RangeSchema,    
+  RangeSchema,
+  PowerSchema,
   parse
 }

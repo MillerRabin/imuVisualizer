@@ -57,12 +57,22 @@
             <i-flex-panel direction="column">
               <i-title size="3">Gyroscope</i-title>
               <i-vector3d class="platform-gyro" read-only="true" name="platform.gyroscope"></i-vector3d>
+            </i-flex-panel>
+          </i-flex-panel>
+          <i-flex-panel class="quat">
+            <i-flex-panel direction="column">
+              <i-float-value class="platform-height" read-only="true" name="platform.height">Height:</i-float-value>
+              <i-float-value class="platform-temperature" read-only="true" name="platform.temperature">Temperature:</i-float-value>
+            </i-flex-panel>
+            <i-flex-panel direction="column">
+              <i-float-value class="power" read-only="true" name="platform.detectors.voltage">Detectors Voltage:</i-float-value>
+              <i-float-value class="power" read-only="true" name="platform.detectors.current">Detectors Current:</i-float-value>
+              <i-float-value class="power" read-only="true" name="platform.cpu.voltage">CPU Voltage:</i-float-value>
+              <i-float-value class="power" read-only="true" name="platform.cpu.current">CPU Current:</i-float-value>
+              <i-float-value class="power" read-only="true" name="platform.enginesline.voltage">Engines Voltage:</i-float-value>
+              <i-float-value class="power" read-only="true" name="platform.enginesline.current">Engines Current:</i-float-value>
             </i-flex-panel>            
           </i-flex-panel>          
-          <i-float-value class="platform-accuracy accuracy" read-only="true"
-            name="platform.accuracy">Accuracy:</i-float-value>
-          <i-float-value class="platform-height" read-only="true" name="platform.height">Height:</i-float-value>
-          <i-float-value class="platform-temperature" read-only="true" name="platform.temperature">Temperature:</i-float-value>
         </i-flex-panel>
         <i-flex-panel class="buttons">
           <i-toggle-button name="platform.toggle-engines" action-click="toggleEngines">Engines</i-toggle-button>
