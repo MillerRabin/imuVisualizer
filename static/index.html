@@ -31,6 +31,10 @@
             <i-led name="platform.engines">Engines</i-led>
             <i-led name="platform.camera">Camera</i-led>
           </i-flex-panel>
+          <i-flex-panel direction="column">
+            <i-led name="platform.detectors-led">Detectors</i-led>
+            <i-led name="platform.cpu-led">CPU</i-led>
+          </i-flex-panel>
         </i-flex-panel>
         <i-flex-panel class="container" data-direction="column">
           <i-title size="3">Rotate</i-title>
@@ -77,9 +81,13 @@
         <i-flex-panel class="buttons">
           <i-toggle-button name="platform.toggle-engines" action-click="toggleEngines">Engines</i-toggle-button>
           <i-toggle-button name="platform.toggle-camera" action-click="toggleCamera">Camera</i-toggle-button>
-          <button name="platform.save-offsets" action-click="saveOffsets">Save Offsets</button>
-          <button name="platform.print" action-click="print">Print</button>
+          <i-toggle-button name="platform.toggle-detectors" action-click="toggleDetectors">Detectors</i-toggle-button>
+          <i-toggle-button name="platform.toggle-cpu" action-click="toggleCPU">CPU</i-toggle-button>
         </i-flex-panel>        
+        <i-flex-panel class="buttons">
+          <button name="platform.save" action-click="saveOffsets">Save Offsets</button>
+          <button name="platform.print" action-click="print">Print</button>
+        </i-flex-panel>
       </i-flex-panel>
       <i-flex-panel class="shoulder panel" data-direction="column">
         <i-title size="2">Shoulder</i-title>

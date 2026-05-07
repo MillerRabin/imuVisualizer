@@ -100,7 +100,7 @@ class BarometerSchema extends Schema {
   temperatureRaw = 'uint16_t';
   unused = 'uint16_t'
   parse(result) {
-    return { height: result.heightRaw, temperature: result.temperatureRaw / 100.0 };
+    return { height: result.heightRaw / 100.0, temperature: result.temperatureRaw / 100.0 };
   }
 };
 

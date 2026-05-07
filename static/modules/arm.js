@@ -15,6 +15,8 @@ class StatusSchema extends schema.Schema {
       clawRangeOK: !!(status.statusRaw1 & 32),
       enginesEnabled: !!(status.statusRaw1 & 64),
       cameraEnabled: !!(status.statusRaw1 & 128),
+      detectorsPowerEnabled: !!(status.statusRaw1 & 256),
+      cpuPowerEnabled: !!(status.statusRaw1 & 512),
     }
   }
 };
@@ -23,19 +25,21 @@ const armSchema = {
   tag: 'uint8_t',
   arm: new StatusSchema(),
   platform: {
-    tag: 'uint8_t',
+    tag: 'uint8_t',    
     quaternion: new schema.QuaternionSchema(),
     accelerometer: new schema.AccelerometerSchema(),
     gyroscope: new schema.GyroscopeSchema(),    
     barometer: new schema.BarometerSchema(),
-    detectorsLinePower: new schema.PowerSchema(),
-    cpuLinePower: new schema.PowerSchema(),
-    enginesLinePower: new schema.PowerSchema(),
+    detectorPower: new schema.PowerSchema(),
+    cpuPower: new schema.PowerSchema(),
+    enginesPower: new schema.PowerSchema(),
     unused1: 'uint16_t',
     unused2: 'uint16_t',
   }, 
   shoulder: {
     tag: 'uint8_t',
+    status1: 'uint32_t',
+    status2: 'uint32_t',
     quaternion: new schema.QuaternionSchema(),
     accelerometer: new schema.AccelerometerSchema(),
     gyroscope: new schema.GyroscopeSchema(),
@@ -43,6 +47,8 @@ const armSchema = {
   },
   elbow: {
     tag: 'uint8_t',
+    status1: 'uint32_t',
+    status2: 'uint32_t',
     quaternion: new schema.QuaternionSchema(),
     accelerometer: new schema.AccelerometerSchema(),
     gyroscope: new schema.GyroscopeSchema(),
@@ -50,6 +56,8 @@ const armSchema = {
   },
   wrist: {
     tag: 'uint8_t',
+    status1: 'uint32_t',
+    status2: 'uint32_t',
     quaternion: new schema.QuaternionSchema(),
     accelerometer: new schema.AccelerometerSchema(),
     gyroscope: new schema.GyroscopeSchema(),
@@ -57,6 +65,8 @@ const armSchema = {
   },
   claw: {
     tag: 'uint8_t',
+    status1: 'uint32_t',
+    status2: 'uint32_t',
     quaternion: new schema.QuaternionSchema(),
     accelerometer: new schema.WitmotionAccelerometerSchema(),
     gyroscope: new schema.WitmotionGyroscopeSchema(),
@@ -147,6 +157,4 @@ class ArmChannel extends JSONFetchChannel {
 }
 
 export const armChannel = new ArmChannel();
-
-
 export default armChannel;

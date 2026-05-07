@@ -168,15 +168,12 @@ function normalizeAngleDeg(a) {
 let needSaveState = false;
 let printState = false;
 
-function getDifference(platformQ, shoulderQ, shoulderOffset) {
+function getDifference(sDiff) {
   const AXIS_X_LOCAL = { x: 1, y: 0, z: 0 };
   const AXIS_Y_LOCAL = { x: 0, y: 1, z: 0 };
   const AXIS_Z_LOCAL = { x: 0, y: 0, z: 1 };
 
-  const qShoulderRelNow = quaternion.multiply(quaternion.invert(platformQ), shoulderQ);
-  const sDiff = quaternion.multiply(quaternion.invert(shoulderOffset), qShoulderRelNow);
-
-  const { twist: yawQ } = swingTwistDecomposition(sDiff, AXIS_X_LOCAL);
+  const { twist: yawQ } = swingTwistDecomposition(sDiff, AXIS_X_LOCAL);  
   const yaw = twistAngle(yawQ);
   const { twist: pitchQ } = swingTwistDecomposition(sDiff, AXIS_Y_LOCAL);
   const pitch = twistAngle(pitchQ);
@@ -222,12 +219,22 @@ async function armCallback(status) {
   if (quaternion.isOne(gOffsets.platform.offset) && (quaternion.isValid(status.platform.quaternion))) {
     loadOffsets(status);
   }
+  
+  const Qp = status.platform.quaternion;
+  const Qs0 = gOffsets.shoulder.offset;
+  const Qp0 = gOffsets.platform.offset;
+  const Qs = status.shoulder.quaternion;
+      
+  const sRel = quaternion.multiply(quaternion.invert(Qp), Qs);
+  const pDiff = quaternion.multiply(quaternion.invert(Qp0), Qp);  
+  const sDiff = quaternion.multiply(quaternion.invert(Qs0), sRel);
+  /*const rEuler = euler.get(sDiff.i, sDiff.j, sDiff.k, sDiff.real);
+  console.log("rEuler", (rEuler.x * (180 / Math.PI)).toFixed(3), (rEuler.y * (180 / Math.PI)).toFixed(3), (rEuler.z * (180 / Math.PI)).toFixed(3));*/
 
-  const pDiff = status.platform.quaternion;
-
+  
   const poEuler = euler.get(status.platform.quaternion.i, status.platform.quaternion.j, status.platform.quaternion.k, status.platform.quaternion.real);
   const soEuler = euler.get(status.shoulder.quaternion.i, status.shoulder.quaternion.j, status.shoulder.quaternion.k, status.shoulder.quaternion.real);
-  
+  const sdEuler = euler.get(sDiff.i, sDiff.j, sDiff.k, sDiff.real);
   const pdEuler = euler.get(pDiff.i, pDiff.j, pDiff.k, pDiff.real);
 
   gComponents.platform.origin.roll = (poEuler.x * (180 / Math.PI)).toFixed(3);
@@ -242,15 +249,20 @@ async function armCallback(status) {
   gComponents.shoulder.origin.pitch = soEuler.y * (180 / Math.PI);
   gComponents.shoulder.origin.yaw = soEuler.z * (180 / Math.PI);
   
+  gComponents.shoulder.difference.roll = sdEuler.x * (180 / Math.PI);
+  gComponents.shoulder.difference.pitch = sdEuler.y * (180 / Math.PI);
+  gComponents.shoulder.difference.yaw = sdEuler.z * (180 / Math.PI);
+    
+  const diff = getDifference(sDiff);
+
+  gComponents.shoulder.x.value = diff.roll * (180 / Math.PI);
+  gComponents.shoulder.y.value = diff.pitch * (180 / Math.PI);
+  gComponents.shoulder.z.value = diff.yaw * (180 / Math.PI);
+
   
-  const diff = getDifference(status.platform.quaternion, status.shoulder.quaternion, gOffsets.shoulder.offset);
-
-  gComponents.shoulder.x.value = normalizeAngleDeg(diff.roll * 180 / Math.PI);
-  gComponents.shoulder.y.value = tiltAngle(status.shoulder.accelerometer);
-  gComponents.shoulder.z.value = normalizeAngleDeg(diff.yaw * 180 / Math.PI);
-
-  //const poQuat = new THREE.Quaternion(pDiff.i, pDiff.j, pDiff.k, pDiff.real);
   const poQuat = new THREE.Quaternion(status.platform.quaternion.i, status.platform.quaternion.j, status.platform.quaternion.k, status.platform.quaternion.real);
+  //const poQuat = new THREE.Quaternion(pDiff.i, pDiff.j, pDiff.k, pDiff.real);
+  //const soQuat = new THREE.Quaternion(sDiff.i, sDiff.j, sDiff.k, sDiff.real);
   const soQuat = new THREE.Quaternion(status.shoulder.quaternion.i, status.shoulder.quaternion.j, status.shoulder.quaternion.k, status.shoulder.quaternion.real);  
   const eoQuat = new THREE.Quaternion(status.elbow.quaternion.i, status.elbow.quaternion.j, status.elbow.quaternion.k, status.elbow.quaternion.real);
   const woQuat = new THREE.Quaternion(status.wrist.quaternion.i, status.wrist.quaternion.j, status.wrist.quaternion.k, status.wrist.quaternion.real);
@@ -272,20 +284,24 @@ async function armCallback(status) {
   gComponents.platform.height.value = status.platform.barometer.height;
   gComponents.platform.temperature.value = status.platform.barometer.temperature;
 
-  gComponents.platform.detectors.voltage.value = status.platform.detectorsLinePower.voltage;
-  gComponents.platform.detectors.current.value = status.platform.detectorsLinePower.current;
-  gComponents.platform.cpu.voltage.value = status.platform.cpuLinePower.voltage;
-  gComponents.platform.cpu.current.value = status.platform.cpuLinePower.current;
-  gComponents.platform.enginesline.voltage.value = status.platform.enginesLinePower.voltage;
-  gComponents.platform.enginesline.current.value = status.platform.enginesLinePower.current;
+  gComponents.platform.detectors.voltage.value = status.platform.detectorPower.voltage;
+  gComponents.platform.detectors.current.value = status.platform.detectorPower.current;
+  gComponents.platform.cpu.voltage.value = status.platform.cpuPower.voltage;
+  gComponents.platform.cpu.current.value = status.platform.cpuPower.current;
+  gComponents.platform.enginesline.voltage.value = status.platform.enginesPower.voltage;
+  gComponents.platform.enginesline.current.value = status.platform.enginesPower.current;
 
   gComponents.platform.online.value = status.arm.online;
   gComponents.platform.canSending.value = status.arm.canSendOK;
   gComponents.platform.engines.value = status.arm.enginesEnabled;
   gComponents.platform.camera.value = status.arm.cameraEnabled;
+  gComponents.platform.detectorsLed.value = status.arm.detectorsPowerEnabled;
+  gComponents.platform.cpuLed.value = status.arm.cpuPowerEnabled;
 
   gComponents.platform.toggleEngines.value = status.arm.enginesEnabled;
   gComponents.platform.toggleCamera.value = status.arm.cameraEnabled;
+  gComponents.platform.toggleDetectors.value = status.arm.detectorsPowerEnabled;
+  gComponents.platform.toggleCPU.value = status.arm.cpuPowerEnabled;
 
   gComponents.shoulder.quaternion.i = soQuat.x;
   gComponents.shoulder.quaternion.j = soQuat.y;
@@ -389,6 +405,18 @@ export class IMUApplication extends Application {
     });
   }
 
+  toggleDetectors(element) {
+    arm.set({
+      detectorsPowerDisabled: !element.value
+    });
+  }
+
+  toggleCPU(element) {
+    arm.set({
+      cpuPowerEnabled: element.value
+    });
+  }
+
   saveOffsets() {
     needSaveState = true;
   }
@@ -396,6 +424,6 @@ export class IMUApplication extends Application {
   print() {
     printState = true;
   }
-}
+};
 
 customElements.define('imu-application', IMUApplication);

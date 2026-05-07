@@ -148,6 +148,7 @@ button {
   background: linear-gradient(145deg, #f0f0f0, #dcdcdc);
   cursor: pointer;
   transition: all 0.25s ease;
+  padding: 1rem;
 }
 
 .power .title {
